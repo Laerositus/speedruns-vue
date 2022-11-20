@@ -1,6 +1,6 @@
 <template>
     <h1>
-        {{game.name}} InfoBar
+        {{game?.name}} InfoBar
     </h1>
     
 

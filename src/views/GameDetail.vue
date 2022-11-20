@@ -25,8 +25,6 @@ import GameLeaderboard from '../components/GameLeaderboard.vue'
 import GameStats from '@/components/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
-import { integer } from 'vue-mc/validation';
-
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -38,9 +36,8 @@ export default defineComponent({
     name: 'GameDetail',
     data() {
         return {
-            id: -1,
-            game: GAMES.find(game => game.id == this.id),
-            editedData: this.game,
+            id: '',
+            game: GAMES[0],
             editMode: false,
         }
     },
@@ -73,7 +70,7 @@ export default defineComponent({
         }
     },
     async mounted() {
-        this.id = this.$route.params.id;
+        this.id = String(this.$route.params.id);
         // console.log(this.game)
         await this.fetchGame(this.id)        
     }

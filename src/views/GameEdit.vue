@@ -57,15 +57,13 @@ import { PLATFORMS } from '../mock-data'
 
 <script lang="ts">
 import type { Game } from '../models/game'
-import { GAMES } from '../mock-data'
+import { GAMES, CATEGORIES } from '../mock-data'
 import { defineComponent } from 'vue'
 import GameInfoBar from '../components/GameInfoBar.vue'
 import GameLeaderboard from '../components/GameLeaderboard.vue'
 import GameStats from '@/components/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
-import { integer } from 'vue-mc/validation';
-
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -77,14 +75,14 @@ export default defineComponent({
     name: 'GameDetail',
     data() {
         return {
-            id: -1,
-            game: GAMES.find(game => game.id == this.id),
+            id: '',
+            game: GAMES[0],
             // editedData: this.game,
             gameName: '',
-            gamePlatforms: [],
-            gameReleaseDate: '',
+            gamePlatforms: PLATFORMS,
+            gameReleaseDate: new Date(),
             gameTotalRuns: 0,
-            gameCategories: [],
+            gameCategories: CATEGORIES,
             gameRule: '',
             gameImage: '',
         }
@@ -134,7 +132,7 @@ export default defineComponent({
     },
     async mounted() {
         // console.log(this.game)
-        this.id = this.$route.params.id;
+        this.id = String(this.$route.params.id);
         await this.fetchGame(this.id);
 
     }

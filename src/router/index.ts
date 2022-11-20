@@ -19,11 +19,11 @@ const router = createRouter({
       name: 'gamedetail',
       component: () => import('../views/GameDetail.vue')
     },
-    {
-      path: '/player/:id',
-      name: 'player',
-      component: () => import('../views/Player.vue')
-    },
+    // {
+    //   path: '/player/:id',
+    //   name: 'player',
+    //   component: () => import('../views/Player.vue')
+    // },
     {
       path: '/editgame/:id',
       name: 'editgame',

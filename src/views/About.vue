@@ -1,5 +1,9 @@
 <script lang="ts">
     const url = "../assets/SpeedrunCollection_ERD.png"
+
+    export default {
+        
+    }
 </script>
 
 <template>

@@ -4,14 +4,14 @@
 
         <el-scrollbar max-height="100%">
 
-            <div v-for="game in games" :key="game" >
+            <div v-for="game in games" :key="game._id">
                 <RouterLink :to="{name: 'gamedetail', params: {id: game._id}}">
                     <el-card>
                         <el-image :src=game.image class="game-cover"/>
 
                         <div>
                             <span>{{game.name}}</span>
-                            <p> {{game.platforms[0]}}</p>
+                            <p> {{game.platforms}}</p>
                         </div>
                     </el-card>
                 </RouterLink>

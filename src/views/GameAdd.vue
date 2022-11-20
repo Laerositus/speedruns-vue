@@ -52,6 +52,7 @@ import {
 } from 'element-plus'
 
 import { PLATFORMS } from '../mock-data'
+import { Platform } from '../models/platform'
 
 </script>
 
@@ -64,7 +65,6 @@ import GameLeaderboard from '../components/GameLeaderboard.vue'
 import GameStats from '@/components/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
-import { integer } from 'vue-mc/validation';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
