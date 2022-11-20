@@ -28,6 +28,11 @@ const router = createRouter({
       path: '/editgame/:id',
       name: 'editgame',
       component: () => import('../views/GameEdit.vue')
+    },
+    {
+      path: '/addgame',
+      name: 'addgame',
+      component: () => import('../views/GameAdd.vue')
     }
   ]
 })

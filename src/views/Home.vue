@@ -1,5 +1,6 @@
 <template>
     <div class="game-list">
+        <el-button @click="addGame">Add Game</el-button>
 
         <el-scrollbar max-height="100%">
 
@@ -24,6 +25,7 @@
 <script lang="ts">
 import { GAMES } from '../mock-data'
 
+
 import { defineComponent } from 'vue'
 import type {AxiosInstance} from 'axios'
 
@@ -46,8 +48,12 @@ export default defineComponent({
             const res = await this.$axios.get('/game')
             // console.log(res.data.data)
             this.games = res.data.data
+        },
+        addGame() {
+            this.$router.push('/addgame');
         }
     },
+
     async mounted() {
         // console.log(this.games)
         await this.fetchGames()

@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <h1> Edit Game page</h1>
+        <h1> Add Game page</h1>
         <!-- {{game.name}} -->
     </div>
 
@@ -19,14 +19,14 @@
         <el-form-item label="ReleaseDate">
             <el-date-picker v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>                
         </el-form-item>
-        <el-form-item label="TotalRuns">
+        <!-- <el-form-item label="TotalRuns">
             <el-input-number v-model="gameTotalRuns" disabled="true" style="{background-color: white;}"/>
-        </el-form-item>
-        <el-form-item label="Categories">
+        </el-form-item> -->
+        <!-- <el-form-item label="Categories">
             <el-checkbox-group v-for="category in gameCategories" :key="category" v-model="gamePlatforms">
                 <el-checkbox :label="category.name"/>
             </el-checkbox-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="Image URL:">
             <el-input v-model="gameImage" />
         </el-form-item>
@@ -35,8 +35,8 @@
 
 
     <!-- <el-button v-if="editMode" v-on:click="editGame">Save changes</el-button> -->
-    <el-button type="danger" @click="editGame">Save game</el-button>
-    <el-button type="danger" @click="deleteGame">Delete game</el-button>
+    <el-button type="primary" @click="addGame">Save game</el-button>
+    <el-button type="danger" @click="cancel">Cancel</el-button>
 </template>
 
 <script setup lang="ts">
@@ -66,7 +66,6 @@ import GameStats from '@/components/GameStats.vue'
 import type {AxiosInstance} from 'axios'
 import { integer } from 'vue-mc/validation';
 
-
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance
@@ -78,7 +77,7 @@ export default defineComponent({
     data() {
         return {
             id: -1,
-            game: GAMES.find(game => game.id == this.id),
+            game: null,
             // editedData: this.game,
             gameName: '',
             gamePlatforms: [],
@@ -90,58 +89,33 @@ export default defineComponent({
         }
     },
     methods: {
-        async fetchGame(id: any){
-            const res = await this.$axios.get('/game/'+id)
-            // console.log(res.data.data)
-            this.game = res.data.data;
-            this.fillDetails();
-        },
-        fillDetails() {
-            this.gameName = this.game.name;
-            this.gamePlatforms = this.game.platforms;
-            this.gameReleaseDate = this.game.releaseDate;     
-            this.gameTotalRuns = this.game.totalRuns;
-            this.gameCategories = this.game.categories;
-            this.gameRule = this.game.gameRule;
-            this.gameImage = this.game.image;
-        },
-        async editGame() {
+        async addGame() {
             console.log("Save Changes called");
             let game = {
-                "id": this.id,
                 "name": this.gameName,
                 "platforms": this.gamePlatforms,
                 "releaseDate": this.gameReleaseDate,
-                "totalRuns": this.gameTotalRuns,
-                "playerCount": this.game.playerCount,
-                "categories": this.gameCategories,
-                "gameRule": this.gameRule,
                 "image": this.gameImage
             }
             console.log(game);
 
-            const res = await this.$axios.put('/game/'+ this.id, game)
-            console.log("Move to gameDetail view");
-            this.$router.push('/gamedetail/'+this.id);
-        },
-        async deleteGame() {
-            console.log("Delete game called");
-            const res = await this.$axios.delete('/game/'+this.id)
-            console.log(res);
-
+            const res = await this.$axios.post('/game', game)
+            console.log("Move to home view");
             this.$router.push('/');
         },
+        cancel() {
+            this.$router.push('/');
+        }
     },
     async mounted() {
         // console.log(this.game)
-        this.id = this.$route.params.id;
-        await this.fetchGame(this.id);
+        // this.id = this.$route.params.id;
+        // await this.fetchGame(this.id);
 
     }
 })
 
 </script>
-
 
 <style>
 
