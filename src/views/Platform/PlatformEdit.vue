@@ -87,7 +87,7 @@ export default defineComponent({
         fillDetails() {
             this.platformName = this.platform.name;
             this.platformReleaseDate = this.platform.releaseDate;
-            this.platformGames = this.platform.games
+            // this.platformGames = this.platform.games;
         },
         async editplatform() {
             console.log("Save Changes called");

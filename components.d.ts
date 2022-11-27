@@ -15,11 +15,6 @@ declare module '@vue/runtime-core' {
     GameInfoBar: typeof import('./src/components/GameInfoBar.vue')['default']
     GameLeaderboard: typeof import('./src/components/GameLeaderboard.vue')['default']
     GameStats: typeof import('./src/components/GameStats.vue')['default']
-    IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
-    IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
-    IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
-    IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
-    IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
