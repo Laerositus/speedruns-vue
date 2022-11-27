@@ -73,6 +73,7 @@ export const GAMES: Game[] = [
             _id: "PS2",
             name: "Playstation 2",
             releaseDate: new Date("2000-11-04"),
+            games: []
         }],
         releaseDate: new Date("2004-09-14"),
         totalRuns: 4,
