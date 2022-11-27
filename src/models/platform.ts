@@ -5,6 +5,6 @@ export class Platform {
         public _id: string,
         public name: string,
         public releaseDate: Date,
-        // public games: Array<String>
+        public games: Array<String>
     ){}    
 }

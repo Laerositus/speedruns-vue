@@ -15,16 +15,19 @@ export const PLATFORMS: Platform[] = [
         _id: "PS2",
         name: "Playstation 2",
         releaseDate: new Date("2000-11-04"),
+        games: []
     },
     {
         _id: "PS3",
         name: "Playstation 3",
         releaseDate: new Date("2007-03-23"),
+        games: []
     },
     {
         _id: "PS4",
         name: "Playstation 4",
         releaseDate: new Date("2013-11-29"),
+        games: []
     }
 ]
 
