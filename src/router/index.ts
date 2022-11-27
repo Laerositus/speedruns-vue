@@ -17,7 +17,7 @@ const router = createRouter({
     {
       path: '/gamedetail/:id',
       name: 'gamedetail',
-      component: () => import('../views/GameDetail.vue')
+      component: () => import('../views/Game/GameDetail.vue')
     },
     // {
     //   path: '/player/:id',
@@ -27,13 +27,38 @@ const router = createRouter({
     {
       path: '/editgame/:id',
       name: 'editgame',
-      component: () => import('../views/GameEdit.vue')
+      component: () => import('../views/Game/GameEdit.vue')
     },
     {
       path: '/addgame',
       name: 'addgame',
-      component: () => import('../views/GameAdd.vue')
-    }
+      component: () => import('../views/Game/GameAdd.vue')
+    },
+    {
+      path: '/platforms',
+      name: 'platforms',
+      component: () => import ('../views/Platform/Platforms.vue')
+    },
+    {
+      path: '/platformdetail/:id',
+      name: 'platformdetail',
+      component: () => import ('../views/Platform/PlatformDetail.vue')
+    },
+    {
+      path: '/addplatform',
+      name: 'addplatform',
+      component: () => import('../views/Platform/PlatformAdd.vue')
+    },
+    {
+      path: '/editplatform/:id',
+      name: 'editplatform',
+      component: () => import('../views/Platform/PlatformEdit.vue')
+    },
+    {
+      path: '/games',
+      name: 'games',
+      component: Home
+    },
   ]
 })
 

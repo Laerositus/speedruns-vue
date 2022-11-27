@@ -1,17 +1,19 @@
 <template>
+    <el-button @click="addGame">Add Game</el-button>
     <div class="game-list">
-        <el-button @click="addGame">Add Game</el-button>
 
         <el-scrollbar max-height="100%">
 
-            <div v-for="game in games" :key="game._id">
+            <div v-for="game in games" :key="game._id" class="game-item">
                 <RouterLink :to="{name: 'gamedetail', params: {id: game._id}}">
                     <el-card>
                         <el-image :src=game.image class="game-cover"/>
 
                         <div>
                             <span>{{game.name}}</span>
-                            <p> {{game.platforms}}</p>
+                            <div v-for="platform in game.platforms" :key="platform._id">                                
+                                <p>{{platform.name}}</p>
+                            </div>
                         </div>
                     </el-card>
                 </RouterLink>
@@ -23,8 +25,7 @@
 </template>
   
 <script lang="ts">
-import { GAMES } from '../mock-data'
-
+import { GAMES, PLATFORMS } from '../mock-data'
 
 import { defineComponent } from 'vue'
 import type {AxiosInstance} from 'axios'
@@ -41,22 +42,26 @@ export default defineComponent({
     data() {
         return {
             games: GAMES,
+            platforms: PLATFORMS
         }
     },
     methods: {
-        async fetchGames(){
-            const res = await this.$axios.get('/game')
-            // console.log(res.data.data)
+        async fetchData(){
+            console.log(this.games)
+            var res = await this.$axios.get('/game')
             this.games = res.data.data
+            // this.$store.commit("setGames", this.games)
+            var res2 = await this.$axios.get('/platform')
+            this.platforms = res2.data.data
+            // this.$store.commit("setPlatforms", this.platforms)
         },
         addGame() {
             this.$router.push('/addgame');
         }
     },
-
     async mounted() {
         // console.log(this.games)
-        await this.fetchGames()
+        await this.fetchData()
 
     }
 })
@@ -64,9 +69,11 @@ export default defineComponent({
 
 <style>
   .game-list {
-      display: grid;
-      columns: 4;
-      flex-wrap: wrap;
+    
+    display: grid;
+    grid-template-columns: 250px;
+    grid-template-rows: auto;
+    grid-auto-flow: dense;
   }
 
   .game-cover {

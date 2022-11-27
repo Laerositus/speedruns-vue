@@ -10,6 +10,12 @@ import { ElAffix } from 'element-plus';
     <el-affix class="Home">
       <RouterLink to="/">Home</RouterLink>
     </el-affix>
+    <el-affix class="Games">
+      <RouterLink to="/games">Games</RouterLink>
+    </el-affix>
+    <el-affix class="Platforms">
+      <RouterLink to="/platforms">Platforms</RouterLink>
+    </el-affix>
     <el-affix class="About">
       <RouterLink to="/about">About</RouterLink>
     </el-affix>
@@ -21,7 +27,7 @@ import { ElAffix } from 'element-plus';
 <style>
   header {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     grid-auto-rows: minmax(100px, auto);
   }
@@ -34,12 +40,23 @@ import { ElAffix } from 'element-plus';
   } */
 
   .Home {
-    grid-column: 2/3;
+    grid-column: 1;
     grid-row: 1;
   }
 
+  .Platforms {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .Games {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+
   .About {
-    grid-column: 3/3;
+    grid-column: 4;
     grid-row: 1;
   }
 

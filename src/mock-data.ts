@@ -1,12 +1,15 @@
 import type { Game } from './models/game'
 import type { Platform } from './models/platform'
 import type { Category } from './models/category'
+import type { Run } from './models/run'
+import type { User } from './models/user'
 
 export const PLATFORMS: Platform[] = [
     {
         _id: "PSX",
         name: "Playstation",
         releaseDate: new Date("1995-09-29"),
+        games: []
     },
     {
         _id: "PS2",
@@ -27,9 +30,9 @@ export const PLATFORMS: Platform[] = [
 
 export const GAMES: Game[] = [
     {
-        _id: "",
+        _id: "0",
         name: "Empty game",
-        platforms: [  ],
+        platforms: PLATFORMS,
         releaseDate: new Date("0000-00-00"),
         totalRuns: 0,
         playerCount: 0,
@@ -46,7 +49,7 @@ export const GAMES: Game[] = [
     {
         _id: "1",
         name: "Crash Bandicoot",
-        platforms: [  ],
+        platforms: [PLATFORMS[0], PLATFORMS[1]],
         releaseDate: new Date("1996-09-09"),
         totalRuns: 0,
         playerCount: 0,
@@ -102,30 +105,40 @@ export const CATEGORIES: Category[] = [
 ]
 
 
-// export const USERS: User[] = [
-//     {
-//         _id: "1",
-//         username: "Laerositus",
-//         totalRuns: 4,
-//         creationDate: new Date()
-//     },
-//     {
-//         _id: "2",
-//         username: "OmgItsShrek",
-//         totalRuns: 0,
-//         creationDate: new Date("2000-01-01")
-//     }
-// ]
+export const USERS: User[] = [
+    {
+        _id: "1",
+        username: "Laerositus",
+        totalRuns: 4,
+        creationDate: new Date()
+    },
+    {
+        _id: "2",
+        username: "OmgItsShrek",
+        totalRuns: 0,
+        creationDate: new Date("2000-01-01")
+    }
+]
 
-// export const RUNS: Run[] = [
-//     {
-//         _id: "1",
-//         game: "2",
-//         category: "1",
-//         time: "25:51",
-//         platform: "PS2",
-//         user: "1",
-//         placement: 1,
-//         videoLink: "https://www.youtube.com"
-//     }
-// ]
+export const RUNS: Run[] = [
+    {
+        _id: "1",
+        game: GAMES[1],
+        category: GAMES[1].categories[0],
+        time: new Date(),
+        platform: GAMES[1].platforms[0],
+        user: USERS[0],
+        placement: 1,
+        videoLink: "https://www.youtube.com"
+    },
+    {
+        _id: "2",
+        game: GAMES[2],
+        category: GAMES[1].categories[0],
+        time: new Date(),
+        platform: GAMES[1].platforms[0],
+        user: USERS[0],
+        placement: 1,
+        videoLink: "https://www.youtube.com"
+    }
+]
