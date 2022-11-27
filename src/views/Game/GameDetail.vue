@@ -47,11 +47,6 @@ export default defineComponent({
             // console.log(res.data.data)
             this.game = res.data.data
         },
-        async editGame() {
-            console.log("Save Changes called");
-            
-            this
-        },
         async deleteGame() {
             console.log("Delete game called");
             // this.toggleEdit();
@@ -70,9 +65,11 @@ export default defineComponent({
         }
     },
     async mounted() {
-        this.id = String(this.$route.params.id);
-        // console.log(this.game)
-        await this.fetchGame(this.id)        
+        if( this.$route.params.id){
+            this.id = String(this.$route.params.id);
+            // console.log(this.game)
+            await this.fetchGame(this.id);
+        }
     }
 })
 

@@ -36,7 +36,6 @@ declare module '@vue/runtime-core' {
   }
 }
 
-
 export default defineComponent({
     name: 'Home',
     data() {

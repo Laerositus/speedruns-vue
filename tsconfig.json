@@ -8,7 +8,7 @@
     },
     "types": ["node", "element-plus/global"]
   },
-
+  "exclude": ["**/*.spec.ts"],
   "references": [
     {
       "path": "./tsconfig.config.json"
