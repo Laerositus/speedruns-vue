@@ -4,7 +4,7 @@ export class Game{
     constructor(
         public _id : string,
         public name: string,
-        public platforms: Array<String>,
+        public platforms: Array<Platform>,
         public releaseDate: Date,
         public totalRuns: number,
         public playerCount: number,
