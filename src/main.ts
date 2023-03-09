@@ -57,7 +57,7 @@ app.use(ElementPlus, { size: 'small', zIndex: 3000 })
 app.provide("$store", store)
 app.use(store)
 app.use(axios, {
-    baseUrl: localUrl + apiPath,
+    baseUrl: remoteUrl + apiPath,
 })
 
 app.mount('#app')
