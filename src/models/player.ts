@@ -1,7 +1,7 @@
-export class User {
+export class Player {
     constructor(
         public _id: string,
-        public username: string,
+        public playername: string,
         public totalRuns: number,
         public creationDate: Date,
     ){}

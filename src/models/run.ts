@@ -1,7 +1,7 @@
 import type { Game } from'./game'
 import type { Category } from './category'
 import type { Platform } from './platform'
-import type { User } from './user'
+import type { Player } from './player'
 
 export class Run {
     constructor(
@@ -10,7 +10,7 @@ export class Run {
         public category: Category,
         public time: Date,
         public platform: Platform,
-        public user: User,
+        public player: Player,
         public placement: number,
         public videoLink: string
     ){}
