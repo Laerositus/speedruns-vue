@@ -14,11 +14,11 @@
       <RouterLink to="/about">About</RouterLink>
     </el-affix>
     <el-affix>
-      <el-button class="header-item" v-if="!$store.state.loggedIn" type="primary" @click="showEntry = true" plain>
+      <el-button class="header-item" v-if="!loggedIn" type="primary" @click="showEntry = true" plain>
         Log In
       </el-button>
     </el-affix>
-    <el-affix class="header-item" v-if="$store.state.loggedIn">
+    <el-affix class="header-item" v-if="loggedIn">
       <RouterLink :to="{ name: 'gamedetail', params: { id: user._id } }"> {{ user.playername }}</RouterLink>
     </el-affix>
     
@@ -42,9 +42,17 @@ import Entry from './components/Entry.vue'
 export default {
   data() {
     return {
-      user: PLAYERS[0],
-      loggedIn: false,
       showEntry: false
+    }
+  },
+  computed: {
+    user: {
+      get() { return this.$store.state.loggedinPlayer },
+      set() { console.log("Logged in Player is updated") }
+    },
+    loggedIn: {
+      get() { return this.$store.state.loggedIn},
+      set() {},
     }
   },
   components: {
@@ -54,7 +62,6 @@ export default {
     toggleLoggedIn(){
       this.showEntry = false;
       this.loggedIn = !this.loggedIn;
-      console.log("Toggled logged in to " +this.loggedIn);
     },
 
     setUser(player: Player){
@@ -103,6 +110,7 @@ header {
   margin: 0;
   padding: 0.5rem;
   width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .header-item {
