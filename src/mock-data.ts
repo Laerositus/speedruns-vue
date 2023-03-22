@@ -2,7 +2,7 @@ import type { Game } from './models/game'
 import type { Platform } from './models/platform'
 import type { Category } from './models/category'
 import type { Run } from './models/run'
-import type { User } from './models/user'
+import type { Player } from './models/player'
 
 export const PLATFORMS: Platform[] = [
     {
@@ -109,16 +109,16 @@ export const CATEGORIES: Category[] = [
 ]
 
 
-export const USERS: User[] = [
+export const PLAYERS: Player[] = [
     {
         _id: "1",
-        username: "Laerositus",
+        playername: "Laerositus",
         totalRuns: 4,
         creationDate: new Date()
     },
     {
         _id: "2",
-        username: "OmgItsShrek",
+        playername: "OmgItsShrek",
         totalRuns: 0,
         creationDate: new Date("2000-01-01")
     }
@@ -131,7 +131,7 @@ export const RUNS: Run[] = [
         category: GAMES[1].categories[0],
         time: new Date(),
         platform: GAMES[1].platforms[0],
-        user: USERS[0],
+        player: PLAYERS[0],
         placement: 1,
         videoLink: "https://www.youtube.com"
     },
@@ -141,7 +141,7 @@ export const RUNS: Run[] = [
         category: GAMES[1].categories[0],
         time: new Date(),
         platform: GAMES[1].platforms[0],
-        user: USERS[0],
+        player: PLAYERS[0],
         placement: 1,
         videoLink: "https://www.youtube.com"
     }
