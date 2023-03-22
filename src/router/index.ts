@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
+import Entry from '@/components/Entry.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,11 +20,16 @@ const router = createRouter({
       name: 'gamedetail',
       component: () => import('../views/Game/GameDetail.vue')
     },
-    // {
-    //   path: '/player/:id',
-    //   name: 'player',
-    //   component: () => import('../views/Player.vue')
-    // },
+    {
+      path: '/entry',
+      name: 'entry',
+      component: Entry
+    },
+    {
+      path: '/player/:id',
+      name: 'player',
+      component: () => import('../views/Player.vue')
+    },
     {
       path: '/editgame/:id',
       name: 'editgame',
