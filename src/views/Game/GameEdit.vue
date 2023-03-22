@@ -126,6 +126,7 @@ export default defineComponent({
             console.log("Delete game called");
             const res = await this.$axios.delete('/game/'+this.id)
             console.log(res);
+            this.$store.commit('removeGame', this.id);
 
             this.$router.push('/');
         },
