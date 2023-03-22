@@ -13,9 +13,11 @@
     <el-affix class="header-item">
       <RouterLink to="/about">About</RouterLink>
     </el-affix>
-    <el-button class="header-item" v-if="!$store.state.loggedIn" type="primary" @click="showEntry = true" plain>
-      Log In
-    </el-button>
+    <el-affix>
+      <el-button class="header-item" v-if="!$store.state.loggedIn" type="primary" @click="showEntry = true" plain>
+        Log In
+      </el-button>
+    </el-affix>
     <el-affix class="header-item" v-if="$store.state.loggedIn">
       <RouterLink :to="{ name: 'gamedetail', params: { id: user._id } }"> {{ user.playername }}</RouterLink>
     </el-affix>
@@ -25,9 +27,9 @@
     <el-dialog v-model="showEntry" title="Register or Log In" >
       <Entry @toggleLoginStatus="toggleLoggedIn"/>
     </el-dialog>
-    <RouterView @loggedIn="setUser"/>
   </div>
-
+  
+  <RouterView @loggedIn="setUser"/>
 </template>
 
 <script lang="ts">
