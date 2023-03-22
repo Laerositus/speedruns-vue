@@ -1,10 +1,7 @@
 <template>
     <div class="body">
         <h1> Add Game page</h1>
-        <!-- {{game.name}} -->
     </div>
-
-    <!-- <GameInfoBar :game="game" />  -->
     
     <el-form >
         <el-form-item label="Game Name" >
@@ -12,21 +9,13 @@
         </el-form-item>
 
         <el-form-item label="Platforms">
-            <el-checkbox-group v-for="platform in PLATFORMS" :key="platform" v-model="gamePlatforms">
+            <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform" v-model="gamePlatforms">
                 <el-checkbox :label="platform.name" />
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="ReleaseDate">
             <el-date-picker v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>                
         </el-form-item>
-        <!-- <el-form-item label="TotalRuns">
-            <el-input-number v-model="gameTotalRuns" disabled="true" style="{background-color: white;}"/>
-        </el-form-item> -->
-        <!-- <el-form-item label="Categories">
-            <el-checkbox-group v-for="category in gameCategories" :key="category" v-model="gamePlatforms">
-                <el-checkbox :label="category.name"/>
-            </el-checkbox-group>
-        </el-form-item> -->
         <el-form-item label="Image URL:">
             <el-input v-model="gameImage" />
         </el-form-item>
@@ -51,18 +40,11 @@ import {
     ElInputNumber 
 } from 'element-plus'
 
-import { PLATFORMS } from '../../mock-data'
-import { Platform } from '../../models/platform'
-
 </script>
 
 <script lang="ts">
 import type { Game } from '../../models/game'
-import { GAMES } from '../../mock-data'
 import { defineComponent } from 'vue'
-import GameInfoBar from '../../components/GameInfoBar.vue'
-import GameLeaderboard from '../../components/GameLeaderboard.vue'
-import GameStats from '@/components/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
 
@@ -73,18 +55,12 @@ declare module '@vue/runtime-core' {
 }
 
 export default defineComponent({
-    name: 'GameDetail',
+    name: 'GameAdd',
     data() {
         return {
-            id: -1,
-            game: null,
-            // editedData: this.game,
             gameName: '',
             gamePlatforms: [],
             gameReleaseDate: '',
-            gameTotalRuns: 0,
-            gameCategories: [],
-            gameRule: '',
             gameImage: '',
         }
     },
@@ -97,10 +73,26 @@ export default defineComponent({
                 "releaseDate": this.gameReleaseDate,
                 "image": this.gameImage
             }
+
             console.log(game);
 
             const res = await this.$axios.post('/game', game)
-            console.log("Move to home view");
+            console.log(res);
+            let gameData = res.data.data;
+
+            let newGame: Game = {
+                _id: gameData._id,
+                name: gameData.name,
+                platforms: gameData.platforms,
+                releaseDate: gameData.releaseDate,
+                totalRuns: 0,
+                playerCount: 0,
+                categories: gameData.categories,
+                gameRule: '',
+                image: gameData.image
+            }
+
+            this.$store.commit('addGame', newGame);
             this.$router.push('/');
         },
         cancel() {
