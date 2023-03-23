@@ -13,30 +13,30 @@
     <el-affix class="header-item">
       <RouterLink to="/about">About</RouterLink>
     </el-affix>
+
     <el-affix>
       <el-button class="header-item" v-if="!loggedIn" type="primary" @click="showEntry = true" plain>
         Log In
       </el-button>
     </el-affix>
     <el-affix class="header-item" v-if="loggedIn">
-      <RouterLink :to="{ name: 'gamedetail', params: { id: user._id } }"> {{ user.playername }}</RouterLink>
+      <!-- TODO Fix Routerlink -->
+      <RouterLink :to="{ name: 'player', params: { playername: player.playername } }"> {{ player.playername }}</RouterLink>
     </el-affix>
     
   </header>
   <div class="flex">
     <el-dialog v-model="showEntry" title="Register or Log In" >
-      <Entry @toggleLoginStatus="toggleLoggedIn"/>
+      <Entry @dismissEntryDialog="dismissEntryDialog"/>
     </el-dialog>
   </div>
   
-  <RouterView @loggedIn="setUser"/>
+  <RouterView />
 </template>
 
 <script lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { ElAffix, ElButton } from 'element-plus'
-import type { Player } from './models/player'
-import { PLAYERS } from './mock-data'
 import Entry from './components/Entry.vue'
 
 export default {
@@ -46,12 +46,14 @@ export default {
     }
   },
   computed: {
-    user: {
-      get() { return this.$store.state.loggedinPlayer },
+    player: {
+      get() { 
+        return this.$store.state.loggedInPlayer;
+      },
       set() { console.log("Logged in Player is updated") }
     },
     loggedIn: {
-      get() { return this.$store.state.loggedIn},
+      get() { return this.$store.state.loggedIn },
       set() {},
     }
   },
@@ -59,43 +61,33 @@ export default {
     Entry
   },
   methods: {
-    toggleLoggedIn(){
+    dismissEntryDialog(){
       this.showEntry = false;
-      this.loggedIn = !this.loggedIn;
-    },
-
-    setUser(player: Player){
-      this.user = player;
     },
 
     async fetchGames(){
-      console.log("Fetching games");
+      // console.log("Fetching games");
       let res = await this.$axios.get('/game');
       let games = res.data.data;
-      console.log("Fetched games: ")
-      console.log(games);
+      // console.log("Fetched games: ")
+      // console.log(games);
 
       this.$store.commit("setGames", games);
     },
 
     async fetchPlatforms(){
-      console.log("Fetching platforms");
+      // console.log("Fetching platforms");
       let res = await this.$axios.get('/platform');
       let platforms = res.data.data;
 
-      console.log("Fetched platforms: ")
-      console.log(platforms);
+      // console.log("Fetched platforms: ")
+      // console.log(platforms);
 
       this.$store.commit("setPlatforms", platforms);
     },
 
   },
-  beforeCreate() {
-    console.log("beforeCreate App.vue");
-
-  },
   async created() {
-    console.log("created App.vue");
     await this.fetchGames();
     await this.fetchPlatforms();
   }

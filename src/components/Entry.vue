@@ -47,13 +47,15 @@ export default defineComponent({
             let res;
 
             try {
-                res = await this.$axios.post('/auth/register', userinfo);            
-                console.log(res.data.data);
-                const resUser = res.data.data;
-                let u = new Player(resUser.id, resUser.username, 0, new Date());
-    
-                this.$emit('loggedIn', u);
-                this.$emit('toggleLoginStatus');
+                res = await this.$axios.post('/auth/register', userinfo); 
+                //console.log(res);     // res.data.data = playername + password
+                let resData = res.data.data;
+
+                const newPlayer = new Player(userinfo.username);
+                res = await this.$axios.post('/player', newPlayer);
+
+                this.$store.commit('logIn', newPlayer);
+                this.$emit('dismissEntryDialog');
             } catch (err) {
                 console.log(res);
             }
@@ -69,11 +71,28 @@ export default defineComponent({
             let res;
             try {
                 res = await this.$axios.post('/auth/login', userinfo);
-                console.log(res);
+                if(res.status !== 200) {
+                    console.log("Login failed: " + res.data.message);
+                    return;
+                }
 
-                this.$emit('loggedIn', new Player("id" , this.username, 0 , new Date()));
-                this.$emit('toggleLoginStatus');
+                res = await this.$axios.get('/player/'+userinfo.username);
 
+                if(res.status !== 200){
+                    // No player found'
+                    console.log("No player found");
+                    return;
+                }
+
+                console.log("Response user");
+                console.log(res)
+
+                let playerData = res.data.data;
+                let loginPlayer = new Player(playerData.playername, playerData.totalRuns, playerData.creationDate, playerData.discord, playerData.steam, playerData.twitch, playerData.youtube);
+
+                this.$store.commit('logIn', loginPlayer);
+                this.$emit('dismissEntryDialog');
+                
             } catch(err: any){
                 res = err.response;
                 console.log(res);
