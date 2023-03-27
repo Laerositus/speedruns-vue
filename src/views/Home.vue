@@ -1,15 +1,14 @@
 <template>
-    <el-button @click="addGame">Add Game</el-button>
-    <div class="game-list">
-        <div class="game-grid">
-
-            
-            <el-scrollbar max-height="100%">
-                
+    <div class="game-list">        
+        <el-button @click="addGame" id="add-game">Add Game</el-button>
+        <el-scrollbar max-height="100%">
+            <div class="game-grid">            
                 <div v-for="game in games" :key="game._id" class="game-item">
                     <RouterLink :to="{ name: 'gamedetail', params: { id: game._id } }">
-                        <el-card>
-                            <el-image :src=game.image class="game-cover" />
+                        <el-card class="game-card">
+                            <div class="game-image">
+                                <el-image :src=game.image class="game-cover" />
+                            </div>
                             
                             <div>
                                 <span>{{ game.name }}</span>
@@ -19,10 +18,9 @@
                             </div>
                         </el-card>
                     </RouterLink>
-                </div>
-            
-            </el-scrollbar>
-        </div>
+                </div>            
+            </div>
+        </el-scrollbar>
     </div>
 </template>
   
@@ -37,7 +35,7 @@ export default ({
     },
     computed: {
         games: {
-            get() {
+            get(): any {
                 return this.$store.state.games;
             },
             set() {
@@ -54,25 +52,37 @@ export default ({
 </script>
 
 <style>
+
 .game-list {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    margin: 1%
 }
 
 .game-grid {
+    margin-top: 10px;
     display: grid;
-    grid-template-columns: 200px, 200px, 200px, 200px;
-    grid-auto-flow: column;
+    grid-template-columns: repeat(auto-fill, 160px);
+    grid-row-gap: 5px;
 }
 
 .game-item {
-    width: 200px;
-    
+    width: 150px;
+    height: 250px;
+}
+
+.game-card {
+    height: 100%;
+}
+
+.game-image {
+    width: 98%;
+    text-align: center;
+    overflow: hidden;
 }
 
 .game-cover {
-    height: 150px;
-    max-width: 110px;
+    height:130px;
+    position: relative;
+    left: 100%;
+    margin-left: -200%;
 }
 </style>
