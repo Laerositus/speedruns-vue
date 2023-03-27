@@ -40,6 +40,9 @@ const mutations = {
         state.loggedInPlayer = player;
         console.log("Logged in player:");
         console.log(state.loggedInPlayer);
+    },
+    logOut(state: any){
+        state.loggedIn = false;
     }
 }
 
