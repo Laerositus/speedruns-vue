@@ -11,10 +11,13 @@
                             </div>
                             
                             <div>
-                                <span>{{ game.name }}</span>
-                                <div v-for="platform in game.platforms" :key="platform._id">
-                                    <p>{{ platform }}</p>
+                                <span class="game-name">{{ game.name }}</span>
+                                <div class="game-platforms">
+                                    <div v-for="platform in game.platforms" :key="platform._id">
+                                        {{ platform.name }}
+                                    </div>
                                 </div>
+
                             </div>
                         </el-card>
                     </RouterLink>
@@ -39,13 +42,18 @@ export default ({
                 return this.$store.state.games;
             },
             set() {
-                console.log("games has changed");
+                console.log("Games has changed");
             }
-        }
+        },
     },
     methods: {
         addGame() {
             this.$router.push('/addgame');
+        }
+    },
+    watch: {
+        games: function() {
+
         }
     }
 })
@@ -66,11 +74,10 @@ export default ({
 
 .game-item {
     width: 150px;
-    height: 250px;
 }
 
 .game-card {
-    height: 100%;
+    height: 300px;
 }
 
 .game-image {
@@ -85,4 +92,21 @@ export default ({
     left: 100%;
     margin-left: -200%;
 }
+
+.game-name {
+    font-size: medium;
+    
+}
+
+.game-platforms {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game-platforms > * {    
+    font-size: 12px;
+    font-weight: 100;
+    margin-right: 3px;
+}
+
 </style>

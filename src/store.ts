@@ -1,5 +1,7 @@
 import { createStore } from 'vuex'
 import { PLAYERS } from './mock-data'
+import type { Game } from './models/game'
+import type { Run } from './models/run'
 
 const state = {
     games: [],
@@ -12,6 +14,7 @@ const mutations = {
     setGames(state: any, games: any) {
         // console.log("Mutation setGames called");
         state.games = games;
+        // console.log(state.games);
     },
     setPlatforms(state: any, platforms: any) {
         // console.log("Mutation setPlatforms called");
@@ -48,7 +51,16 @@ const mutations = {
 
 const actions = {}
 
-const getters = {}
+const getters = {
+    runCount (state:any, game: Game) {
+        // return state.game.runs.length;
+    },
+    runsSorted (state:any, game: Game): Run[] {
+        let runs = new Array<Run>();
+        runs = game.runs.sort((a,b) => a.time.getTime()-b.time.getTime());
+        return runs;
+    }
+}
 
 const modules = {}
 

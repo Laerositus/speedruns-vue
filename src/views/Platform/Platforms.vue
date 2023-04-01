@@ -1,22 +1,22 @@
 <template>
-    <el-button @click="addPlatform">Add platform</el-button>
     <div class="platform-list">
-
+        <el-button @click="addPlatform">Add platform</el-button>
         <el-scrollbar max-height="100%">
 
-            <div v-for="platform in platforms" :key="platform._id">
-                <RouterLink :to="{name: 'platformdetail', params: {id: platform._id}}">
-                    <el-card>
-                        <!-- <el-image :src=platform.image class="platform-cover"/> -->
-
-                        <div>
-                            <span>{{platform.name}}</span>
-                            <!-- <div v-for="platform in platform.platforms" :key="platform._id">                                
-                                <p>{{platform.name}}</p>
-                            </div> -->
-                        </div>
-                    </el-card>
-                </RouterLink>
+            <div class="platform-grid">
+                <div v-for="platform in platforms" :key="platform._id" class="platform-item">
+                    <RouterLink :to="{name: 'platformdetail', params: {id: platform._id}}">
+                        <el-card class="platform-card">
+                            <div class="platform-image">
+                                <!-- <el-image :src=platform.image class="platform-cover"/> -->
+                            </div>
+    
+                            <div>
+                                <span>{{platform.name}}</span>
+                            </div>
+                        </el-card>
+                    </RouterLink>
+                </div>
             </div>
             
         </el-scrollbar>
@@ -63,13 +63,36 @@ export default defineComponent({
 </script>
 
 <style>
-  .platform-list {
-      display: flex;
-      columns: 4;
-      flex-wrap: wrap;
-  }
+.platform-list {
+    margin: 1%
+}
 
-  .platform-cover {
-    height: 150px;
-  }
+.platform-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 160px);
+    grid-row-gap: 5px;
+}
+
+.platform-item {
+    width: 150px;
+    height: 250px;
+}
+
+.platform-card {
+    height: 100%;
+}
+
+.platform-image {
+    width: 98%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.platform-cover {
+    height:130px;
+    position: relative;
+    left: 100%;
+    margin-left: -200%;
+}
 </style>

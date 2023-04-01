@@ -13,17 +13,19 @@
                 <el-checkbox :label="platform.name" />
             </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>                
-        </el-form-item>
+        
         <el-form-item label="Image URL:">
             <el-input v-model="gameImage" />
         </el-form-item>
 
+        <el-form-item label="ReleaseDate">
+            <el-date-picker class="date-picker" type="date" v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>
+            
+        </el-form-item>
+        
     </el-form>
-
-
-    <!-- <el-button v-if="editMode" v-on:click="editGame">Save changes</el-button> -->
+    
+    
     <el-button type="primary" @click="addGame">Save game</el-button>
     <el-button type="danger" @click="cancel">Cancel</el-button>
 </template>
@@ -110,5 +112,10 @@ export default defineComponent({
 </script>
 
 <style>
+
+.el-picker-panel__body {
+    /* background-color: black; */
+    border: 2px black;
+}
 
 </style>
