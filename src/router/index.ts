@@ -65,6 +65,11 @@ const router = createRouter({
       name: 'games',
       component: Home
     },
+    {
+      path: '/submit/:id',
+      name: 'submit',	
+      component: () => import('../views/Run/RunSubmit.vue')
+    },
   ]
 })
 

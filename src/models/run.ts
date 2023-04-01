@@ -4,14 +4,31 @@ import type { Platform } from './platform'
 import type { Player } from './player'
 
 export class Run {
+    game: Game;
+    category: Category;
+    time: Date;
+    platform: Platform;
+    player: Player;
+    placement: number;
+    videoLink: string;
+
+
     constructor(
-        public _id: string,
-        public game: Game,
-        public category: Category,
-        public time: Date,
-        public platform: Platform,
-        public player: Player,
-        public placement: number,
-        public videoLink: string
-    ){}
+        _id: string,
+        game: Game,
+        category: Category,
+        time: Date,
+        platform: Platform,
+        player: Player,
+        placement: number,
+        videoLink: string
+    ){
+        this.game = game;
+        this.category = category;
+        this.time = time;
+        this.platform = platform;
+        this.player = player;
+        this.placement = placement;
+        this.videoLink = videoLink;        
+    }
 }
