@@ -58,8 +58,7 @@ export default defineComponent({
                 this.$emit('dismissEntryDialog');
             } catch (err) {
                 console.log(res);
-            }
-            
+            }            
         },
         async login() {
             //TODO Show Error message if login failed

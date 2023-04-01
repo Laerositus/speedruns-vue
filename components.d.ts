@@ -17,10 +17,11 @@ declare module '@vue/runtime-core' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     Entry: typeof import('./src/components/Entry.vue')['default']
-    GameInfoBar: typeof import('./src/components/GameInfoBar.vue')['default']
-    GameLeaderboard: typeof import('./src/components/GameLeaderboard.vue')['default']
-    GameStats: typeof import('./src/components/GameStats.vue')['default']
+    GameInfoBar: typeof import('./src/components/GameComponents/GameInfoBar.vue')['default']
+    GameLeaderboard: typeof import('./src/components/GameComponents/GameLeaderboard.vue')['default']
+    GameStats: typeof import('./src/components/GameComponents/GameStats.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    RunSubmissionForm: typeof import('./src/components/RunSubmissionForm.vue')['default']
   }
 }

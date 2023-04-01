@@ -66,22 +66,14 @@ export default {
     },
 
     async fetchGames(){
-      // console.log("Fetching games");
       let res = await this.$axios.get('/game');
       let games = res.data.data;
-      // console.log("Fetched games: ")
-      // console.log(games);
-
       this.$store.commit("setGames", games);
     },
 
     async fetchPlatforms(){
-      // console.log("Fetching platforms");
       let res = await this.$axios.get('/platform');
       let platforms = res.data.data;
-
-      // console.log("Fetched platforms: ")
-      // console.log(platforms);
 
       this.$store.commit("setPlatforms", platforms);
     },
@@ -101,7 +93,7 @@ header {
   display: flex;
   margin: 0;
   padding: 0.5rem;
-  width: 100%;
+  width: inherit;
   background-color: rgba(0, 0, 0, 0.2);
 }
 
