@@ -87,6 +87,7 @@ export default defineComponent({
                 name: gameData.name,
                 platforms: gameData.platforms,
                 releaseDate: gameData.releaseDate,
+                runs: [],
                 totalRuns: 0,
                 playerCount: 0,
                 categories: gameData.categories,

@@ -59,9 +59,6 @@ import { PLATFORMS } from '../../mock-data'
 import type { Game } from '../../models/game'
 import { GAMES, CATEGORIES } from '../../mock-data'
 import { defineComponent } from 'vue'
-import GameInfoBar from '../../components/GameInfoBar.vue'
-import GameLeaderboard from '../../components/GameLeaderboard.vue'
-import GameStats from '@/components/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
 
