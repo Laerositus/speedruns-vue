@@ -17,7 +17,7 @@
         </div>
         <div class="info-release-date">
             <span class="release-date" type="date">
-                Released: {{ rDate }}
+                Released on: {{ rDate }}
             </span>
         </div>
         
@@ -38,8 +38,13 @@ export default defineComponent({
     },
     data() {
         return {
-            rDate: "",
+            rDate: this.getReleaseDate(),
         }
+    },
+    computed: {
+        // rDate: {
+        //     get() {return this.getReleaseDate()}
+        // }
     },
     methods: {
         getReleaseDate(){
@@ -53,9 +58,7 @@ export default defineComponent({
         }
     },
     watch: {
-        game() {
-            this.rDate = this.getReleaseDate();
-        }
+        
     },
     created() {
     }

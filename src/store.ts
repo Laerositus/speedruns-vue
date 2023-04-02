@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import { PLAYERS } from './mock-data'
 import type { Game } from './models/game'
+import type { Platform } from './models/platform'
 import type { Run } from './models/run'
 
 const state = {
@@ -59,6 +60,14 @@ const getters = {
         let runs = new Array<Run>();
         runs = game.runs.sort((a,b) => a.time.getTime()-b.time.getTime());
         return runs;
+    },
+    filteredPlatforms: (state: any) => (platforms: string | string[]) => {
+        const ps = state.platforms.filter((p : {name: string}) => platforms.includes(p.name));        
+        return ps;
+    },
+    gameListByPlatform: (state:any) => (platform: Platform) => {
+        const gameList = state.games.filter((game: { platforms: string | string[] }) => game.platforms.includes(platform.name));
+        return gameList;
     }
 }
 

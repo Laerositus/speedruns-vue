@@ -9,22 +9,22 @@
         </el-form-item>
 
         <el-form-item label="Platforms">
-            <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform" v-model="gamePlatforms">
-                <el-checkbox :label="platform.name" />
-            </el-checkbox-group>
+            <div class="form-platforms" >
+                <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="gamePlatforms" class="platforms-group">
+                    <el-checkbox :label="platform.name" class="platforms-item" @change="log"/>
+                </el-checkbox-group>
+            </div>
         </el-form-item>
         
-        <el-form-item label="Image URL:">
+        <el-form-item label="Image URL">
             <el-input v-model="gameImage" />
         </el-form-item>
 
         <el-form-item label="ReleaseDate">
-            <el-date-picker class="date-picker" type="date" v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>
-            
+            <el-date-picker type="date" v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>            
         </el-form-item>
         
-    </el-form>
-    
+    </el-form>    
     
     <el-button type="primary" @click="addGame">Save game</el-button>
     <el-button type="danger" @click="cancel">Cancel</el-button>
@@ -69,9 +69,12 @@ export default defineComponent({
     methods: {
         async addGame() {
             console.log("Save Changes called");
+
+            const ps = this.$store.getters.filteredPlatforms(this.gamePlatforms);
+
             let game = {
                 "name": this.gameName,
-                "platforms": this.gamePlatforms,
+                "platforms": ps,
                 "releaseDate": this.gameReleaseDate,
                 "image": this.gameImage
             }
@@ -100,6 +103,9 @@ export default defineComponent({
         },
         cancel() {
             this.$router.push('/');
+        },
+        log() {
+            console.log(this.gamePlatforms);
         }
     },
     async mounted() {
@@ -113,10 +119,25 @@ export default defineComponent({
 </script>
 
 <style>
-
 .el-picker-panel__body {
-    /* background-color: black; */
-    border: 2px black;
+    background-color: black;
 }
+
+.form-label {
+    margin-left: 20px;
+}
+
+.form-platforms {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+}
+
+/* .platforms-group {
+    
+}
+
+.platforms-item {
+
+} */
 
 </style>
