@@ -1,6 +1,5 @@
 <template>
-    <h1> Submit Run Vue!</h1>
-    <RunSubmissionForm />
+    <RunSubmissionForm :game="game"/>
 </template>
 
 <script lang="ts">
@@ -14,11 +13,25 @@ export default defineComponent({
     },
     data() {
         return {
-
+        }
+    },
+    computed: {
+        game: {
+            get(): any {
+                const id = this.$route.params.id;
+                const currentGame = this.$store.state.games.find((game: {_id: string}) => game._id == id);
+                console.log(currentGame);
+                return currentGame;
+            },
+            set() { }
         }
     },
     methods: {
+        
 
+    },
+    mounted(){
+        
     }
 })
 </script>

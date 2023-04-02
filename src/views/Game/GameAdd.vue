@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <h1> Add Game page</h1>
+        <h1> Add a new game</h1>
     </div>
     
     <el-form >
