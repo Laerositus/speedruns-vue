@@ -8,7 +8,7 @@
             <el-input v-model="platformName"/>
         </el-form-item>
         <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="platformReleaseDate" :placeholder="platformReleaseDate"/>                
+            <el-date-picker v-model="platformReleaseDate" type="date"/>                
         </el-form-item>
         <!-- <el-form-item label="Image URL:">
             <el-input v-model="platformImage" />
@@ -18,7 +18,7 @@
 
 
     <!-- <el-button v-if="editMode" v-on:click="editplatform">Save changes</el-button> -->
-    <el-button type="primary" @click="addplatform">Save platform</el-button>
+    <el-button type="primary" @click="addPlatform">Save platform</el-button>
     <el-button type="danger" @click="cancel">Cancel</el-button>
 </template>
 
@@ -37,8 +37,7 @@ import {
 </script>
 
 <script lang="ts">
-import type { Platform } from '../../models/platform'
-import { GAMES,PLATFORMS } from '../../mock-data'
+import { Platform } from '../../models/platform'
 import { defineComponent } from 'vue'
 
 import type {AxiosInstance} from 'axios'
@@ -60,17 +59,28 @@ export default defineComponent({
         }
     },
     methods: {
-        async addplatform() {
-            console.log("Save Changes called");
+        async addPlatform() {
+            // console.log("Save Changes called");
             let platform = {
                 "name": this.platformName,
                 "releaseDate": this.platformReleaseDate,
             }
-            console.log(platform);
+            const res = await this.$axios.post('/platform', platform);
 
-            const res = await this.$axios.post('/platform', platform)
-            console.log("Move to platform view");
-            this.$router.push('/platforms');
+            let relDate = new Date();
+            relDate.setTime(Date.parse(this.platformReleaseDate));
+            let resP = res.data.data;
+            
+            let p = new Platform( 
+                resP._id, 
+                this.platformName, 
+                relDate
+            );
+            this.$store.commit('addPlatform', p);
+
+            // console.log("Move to platform view");
+
+            this.$router.back();
         },
         cancel() {
             this.$router.push('/');

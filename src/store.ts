@@ -1,13 +1,14 @@
 import { createStore } from 'vuex'
 import { PLAYERS } from './mock-data'
-import type { Game } from './models/game'
-import type { Platform } from './models/platform'
-import type { Run } from './models/run'
+import type { Game } from '@/models/game'
+import type { Platform } from '@/models/platform'
+import type { Run } from '@/models/run'
+import { Category } from '@/models/category'
 
 const state = {
-    games: [],
-    platforms: [],
-    runs: [],
+    games: new Array<Game>(),
+    platforms: new Array<Platform>(),
+    runs: new Array<Run>(),
     loggedIn: true,
     loggedInPlayer: PLAYERS[0]
 }
@@ -15,7 +16,13 @@ const state = {
 const mutations = {
     setGames(state: any, games: Game[]) {
         // console.log("Mutation setGames called");
+        if(games == undefined) return;
         state.games = games;
+        
+        state.games.forEach((game: { totalRuns: number | undefined; playerCount: number | undefined }) => {
+            if(game.totalRuns == undefined) { game.totalRuns =  0; }
+            if(game.playerCount == undefined) { game.playerCount = 0; }
+        })
         // console.log(state.games);
     },
     setPlatforms(state: any, platforms: Platform[]) {
@@ -32,15 +39,24 @@ const mutations = {
             return sortedRuns;
         };
 
+        if (state.games == undefined || runs == undefined) return;
         state.games.forEach((game: Game) => {
             const runList = runs.filter((run: {game: string}) => run.game == game._id);
+            game.totalRuns = runList.length;            
             const sortedRuns = sortRuns(runList);
+            
+            var playersInRuns = new Array<string>();
             var i = 1;
             sortedRuns.forEach((run: Run) => {
+                if(!playersInRuns.includes(run.player)){
+                    playersInRuns.push(run.player);
+                }
                 run.placement = i;
-                i++ ;
+                i++;
                 state.runs.push(run);
             })
+            game.playerCount = playersInRuns.length;
+
         });
     },
     updateGame(state: any, updatedGame: any){
@@ -53,20 +69,28 @@ const mutations = {
     },
     addGame(state: any, game: any){
         // console.log("Mutation addGame called");
+        game.totalRuns = 0;
+        game.playerCount = 0;
+        if(state.games == undefined) {
+            state.games = new Array<Game>();
+        }
+
         state.games.push(game);
     },
     removeGame(state: any, removedGameId: any){
         // console.log("Mutation removeGame called");
         state.games = state.games.filter((game: any) => game._id !== removedGameId);
     },
-    addPlatform(state: any, platform: Platform): void {
-
+    addPlatform(state: any, platform: Platform) {
+        if (state.platforms == undefined) { state.platforms = new Array<Platform>(); }
+        state.platforms.push(platform);
     },
     removePlatform(state: any, removedPlatformId: any){
         // console.log("Mutation removeGame called");
         state.platforms = state.platforms.filter((platform: any) => platform._id !== removedPlatformId);
     },
     addRun(state: any, run: Run) {
+        if(state.runs == undefined) { state.runs = new Array<Run>(); }
         let runs = state.runs;
         runs.push(run);
         this.commit('setRuns', runs);
@@ -100,12 +124,25 @@ const getters = {
         const sortedRuns = runs.sort((a,b) => timeInSeconds(a.time)-timeInSeconds(b.time));
         return sortedRuns;
     },
-    filteredPlatforms: (state: any) => (platforms: string | string[]) => {
-        const ps = state.platforms.filter((p : {name: string}) => platforms.includes(p.name));        
-        return ps;
+    filteredPlatformIDs: (state: any) => (platforms: string[]) =>{
+        const filteredPlatforms = state.platforms.filter((platform: {name: string}) => platforms.includes(platform.name));
+        const fpIDs = new Array<string>();
+        filteredPlatforms.forEach((p: { _id: string }) => fpIDs.push(p._id));
+        return fpIDs;
+    },    
+    filteredPlatformNames: (state: any) => (platforms: string[]) =>{
+        if(platforms == undefined) return;
+        const filteredPlatforms = state.platforms.filter((platform: { _id: string }) => platforms.includes(platform._id))
+        const fpNames = new Array<string>();
+        filteredPlatforms.forEach((p: { name: string }) => fpNames.push(p.name));
+        return fpNames;
+    },
+    filteredPlatforms: (state:any) => (platforms: string[]) => {
+        const filteredPlatforms = state.platforms.filter((platform: { _id: string }) => platforms.includes(platform._id));
+        return filteredPlatforms;
     },
     gameListByPlatform: (state:any) => (platform: Platform) => {
-        const gameList = state.games.filter((game: { platforms: string | string[] }) => game.platforms.includes(platform.name));
+        const gameList = state.games.filter((game: { platforms: string | string[] }) => game.platforms.includes(platform._id));
         return gameList;
     },
     runListByGame: (state:any) => (game: Game) => {

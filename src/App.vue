@@ -4,9 +4,9 @@
     <el-affix class="header-item">
       <RouterLink to="/">Home</RouterLink>
     </el-affix>
-    <el-affix class="header-item">
+    <!-- <el-affix class="header-item">
       <RouterLink to="/games">Games</RouterLink>
-    </el-affix>
+    </el-affix> -->
     <el-affix class="header-item">
       <RouterLink to="/platforms">Platforms</RouterLink>
     </el-affix>
@@ -35,8 +35,6 @@
 </template>
 
 <script lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { ElAffix, ElButton } from 'element-plus'
 import Entry from './components/Entry.vue'
 
 export default {
@@ -87,8 +85,8 @@ export default {
 
   },
   async created() {
-    await this.fetchGames();
     await this.fetchPlatforms();
+    await this.fetchGames();
     await this.fetchRuns();
   }
 }

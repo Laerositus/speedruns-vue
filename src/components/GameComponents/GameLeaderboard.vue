@@ -26,10 +26,9 @@ import { Film } from '@element-plus/icons-vue'
             </el-table-column>
             <el-table-column label="Video">
                 <template #default="scope">
-                    <a :src="scope.row.videoLink">
-                        <el-icon> <Film /> </el-icon>
-                    </a>    
-                    
+                    <el-button @click="openVideoLink(scope.row.videoLink)">
+                        <el-icon > <Film /> </el-icon>
+                    </el-button>
                 </template>
             </el-table-column>
             <el-table-column>
@@ -52,7 +51,6 @@ export default defineComponent({
     computed: {
         runs(): Run[] {
             const runs = this.$store.getters.runListByGame(this.game);
-            // console.log(runs);
             return runs;
         },
     },
@@ -60,22 +58,21 @@ export default defineComponent({
         return {
         }
     },
-    mounted() {
-
-    },
     methods: {
         getCategory(catID: string): string {
             const cat = this.game.categories.find((el: { _id: string; }) => el._id == catID);
             return cat.name;
         },
         getPlatform(platformID: string): string {
-            const plat = this.game.platforms.find((el: { _id: string; }) => el._id == platformID);
+            const plat = this.$store.state.platforms.find((el: { _id: string; }) => el._id == platformID);            
             return plat.name;
         },
         routingRunDetail(id: string){
             this.$router.push('/run/' + id);
-        }
-
+        },
+        openVideoLink(url: string) {
+            window?.open(url, '_blank').focus();
+        },
     }
 })
 </script>

@@ -13,8 +13,8 @@
                             <div>
                                 <span class="game-name">{{ game.name }}</span>
                                 <div class="game-platforms">
-                                    <div v-for="platform in game.platforms" :key="platform._id">
-                                        {{ platform.name }}
+                                    <div v-for="platform in $store.getters.filteredPlatformNames(game.platforms)" :key="platform">
+                                        {{ platform }}
                                     </div>
                                 </div>
 
@@ -47,14 +47,17 @@ export default ({
         },
     },
     methods: {
+        async fetchGames(){
+            let res = await this.$axios.get('/game');
+            let games = res.data.data;
+            this.$store.commit("setGames", games);
+        },
         addGame() {
             this.$router.push('/addgame');
-        }
+        },
     },
-    watch: {
-        games: function() {
-
-        }
+    async mounted() {
+        await this.fetchGames();
     }
 })
 </script>

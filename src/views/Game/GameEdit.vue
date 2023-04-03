@@ -12,18 +12,18 @@
         </el-form-item>
 
         <el-form-item label="Platforms">
-            <el-checkbox-group v-for="platform in PLATFORMS" :key="platform" v-model="gamePlatforms">
+            <el-checkbox-group v-for="platform in game.platforms" :key="platform" v-model="game.platforms">
                 <el-checkbox :label="platform.name" />
             </el-checkbox-group>
         </el-form-item>
         <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>                
+            <el-date-picker v-model="game.releaseDate"/>                
         </el-form-item>
         <el-form-item label="TotalRuns">
-            <el-input-number v-model="gameTotalRuns" disabled="true" style="{background-color: white;}"/>
+            <el-input-number v-model="gameTotalRuns" disabled style="{background-color: white;}"/>
         </el-form-item>
         <el-form-item label="Categories">
-            <el-checkbox-group v-for="category in gameCategories" :key="category" v-model="gamePlatforms">
+            <el-checkbox-group v-for="category in game.categories" :key="category._id" v-model="game.categories">
                 <el-checkbox :label="category.name"/>
             </el-checkbox-group>
         </el-form-item>
@@ -32,7 +32,6 @@
         </el-form-item>
 
     </el-form>
-
 
     <!-- <el-button v-if="editMode" v-on:click="editGame">Save changes</el-button> -->
     <el-button type="danger" @click="editGame">Save game</el-button>
@@ -73,24 +72,14 @@ export default defineComponent({
     data() {
         return {
             id: '',
-            game: GAMES[0],
-            // editedData: this.game,
-            gameName: '',
-            gamePlatforms: PLATFORMS,
-            gameReleaseDate: new Date(),
-            gameTotalRuns: 0,
-            gameCategories: CATEGORIES,
-            gameRule: '',
-            gameImage: '',
+        }
+    },
+    computed: {
+        game() {
+            return this.$store.state.game.find((game: { _id: string }) => game._id == this.id)
         }
     },
     methods: {
-        async fetchGame(id: any){
-            const res = await this.$axios.get('/game/'+id)
-            // console.log(res.data.data)
-            this.game = res.data.data;
-            this.fillDetails();
-        },
         fillDetails() {
             this.gameName = this.game.name;
             this.gamePlatforms = this.game.platforms;
@@ -101,22 +90,19 @@ export default defineComponent({
             this.gameImage = this.game.image;
         },
         async editGame() {
-            console.log("Save Changes called");
             let game = {
-                "id": this.id,
-                "name": this.gameName,
-                "platforms": this.gamePlatforms,
-                "releaseDate": this.gameReleaseDate,
-                "totalRuns": this.gameTotalRuns,
+                "name": this.game.name,
+                "platforms": this.game.platforms,
+                "releaseDate": this.game.releaseDate,
+                "totalRuns": this.game.totalRuns,
                 "playerCount": this.game.playerCount,
-                "categories": this.gameCategories,
-                "gameRule": this.gameRule,
-                "image": this.gameImage
+                "categories": this.game.categories,
+                "gameRule": this.game.gameRule,
+                "image": this.game.image
             }
-            console.log(game);
 
             const res = await this.$axios.put('/game/'+ this.id, game)
-            console.log("Move to gameDetail view");
+
             this.$router.push('/gamedetail/'+this.id);
         },
         async deleteGame() {
@@ -128,10 +114,8 @@ export default defineComponent({
             this.$router.push('/');
         },
     },
-    async mounted() {
-        // console.log(this.game)
+    created() {
         this.id = String(this.$route.params.id);
-        await this.fetchGame(this.id);
     }
 })
 

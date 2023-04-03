@@ -30,7 +30,7 @@ export default defineComponent({
     methods: {
         logOut() {
             this.$store.commit('logOut');
-            this.$router.push("/");
+            this.$router.back();
         },
         async deletePlayer() {
 

@@ -6,7 +6,7 @@
         </div>
         <div>
             <div class="detail-buttons">
-                <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button>
+                <!-- <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button> -->
                 <el-button @click="goToSubmitRunPage"> Submit Run </el-button>
             </div>
             <GameStats :game="game" />
@@ -22,12 +22,8 @@ import { ElButton } from 'element-plus'
 
 
 <script lang="ts">
-import { GAMES } from '../../mock-data'
 import { ElMessage } from 'element-plus'
 import { defineComponent } from 'vue'
-import GameInfoBar from '@/components/GameComponents/GameInfoBar.vue'
-import GameLeaderboard from '@/components/GameComponents/GameLeaderboard.vue'
-import GameStats from '@/components/GameComponents/GameStats.vue'
 
 import type {AxiosInstance} from 'axios'
 
@@ -46,10 +42,8 @@ export default defineComponent({
         }
     },
     computed: {
-        game: {
-            get() {
-                return this.$store.state.games.find((game: { _id: string } ) => game._id == this.id)},
-            set() {}
+        game() {
+            return this.$store.state.games.find((game: { _id: string } ) => game._id == this.id)
         }
     },
     methods: {
@@ -69,7 +63,6 @@ export default defineComponent({
         },
         goToSubmitRunPage() {
             // console.log("Moving to submit run view");
-
             if(this.$store.state.loggedIn) {
                 this.$router.push('/submit/'+this.id);
             } else {

@@ -11,7 +11,7 @@
         <el-form-item label="Platforms">
             <div class="form-platforms" >
                 <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="gamePlatforms" class="platforms-group">
-                    <el-checkbox :label="platform.name" class="platforms-item" @change="log"/>
+                    <el-checkbox :label="platform.name" class="platforms-item"/>
                 </el-checkbox-group>
             </div>
         </el-form-item>
@@ -21,7 +21,7 @@
         </el-form-item>
 
         <el-form-item label="ReleaseDate">
-            <el-date-picker type="date" v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>            
+            <el-date-picker type="date" v-model="gameReleaseDate" />            
         </el-form-item>
         
     </el-form>    
@@ -45,7 +45,7 @@ import {
 </script>
 
 <script lang="ts">
-import type { Game } from '../../models/game'
+import { Game } from '../../models/game'
 import { defineComponent } from 'vue'
 
 import type {AxiosInstance} from 'axios'
@@ -68,35 +68,36 @@ export default defineComponent({
     },
     methods: {
         async addGame() {
-            console.log("Save Changes called");
-
-            const ps = this.$store.getters.filteredPlatforms(this.gamePlatforms);
+            const platformIDs = this.$store.getters.filteredPlatformIDs(this.gamePlatforms);
 
             let game = {
                 "name": this.gameName,
-                "platforms": ps,
+                "platforms": platformIDs,
                 "releaseDate": this.gameReleaseDate,
-                "image": this.gameImage
+                "image": this.gameImage,
+                "categories": [
+                    {
+                        "_id": 0,
+                        "name": "Any%",
+                        "categoryRule": "Run ends at credits"
+                    }
+                ],
             }
-
-            console.log(game);
-
+            
             const res = await this.$axios.post('/game', game)
-            console.log(res);
+            
             let gameData = res.data.data;
 
-            let newGame: Game = {
-                _id: gameData._id,
-                name: gameData.name,
-                platforms: gameData.platforms,
-                releaseDate: gameData.releaseDate,
-                runs: [],
-                totalRuns: 0,
-                playerCount: 0,
-                categories: gameData.categories,
-                gameRule: '',
-                image: gameData.image
-            }
+            let newGame = new Game(
+                gameData._id,
+                gameData.name,
+                gameData.platforms,
+                gameData.releaseDate,
+                0,0,
+                gameData.categories,
+                gameData.gameRule,
+                gameData.image
+            );
 
             this.$store.commit('addGame', newGame);
             this.$router.push('/');
@@ -108,12 +109,6 @@ export default defineComponent({
             console.log(this.gamePlatforms);
         }
     },
-    async mounted() {
-        // console.log(this.game)
-        // this.id = this.$route.params.id;
-        // await this.fetchGame(this.id);
-
-    }
 })
 
 </script>
@@ -130,14 +125,16 @@ export default defineComponent({
 .form-platforms {
     display: grid;
     grid-template-rows: repeat(5, auto);
-}
-
-/* .platforms-group {
-    
+    grid-auto-flow: column;
+    gap: 0.5em;
 }
 
 .platforms-item {
+    margin-left: 10px;
+}
 
-} */
+.el-checkbox__label {
+    margin-left: 5px;
+}
 
 </style>

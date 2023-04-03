@@ -1,6 +1,6 @@
 <template>
     <div class="platform-list">
-        <el-button @click="addPlatform">Add platform</el-button>
+        <el-button @click="addPlatform">Add Platform</el-button>
         <el-scrollbar max-height="100%">
 
             <div class="platform-grid">
@@ -25,8 +25,6 @@
 </template>
 
 <script lang="ts">
-import { PLATFORMS } from '../../mock-data'
-
 import { defineComponent } from 'vue'
 import type {AxiosInstance} from 'axios'
 
@@ -39,26 +37,16 @@ declare module '@vue/runtime-core' {
 
 export default defineComponent({
     name: 'Platforms',
-    data() {
-        return {
-            platforms: PLATFORMS
+    computed: {
+        platforms() {
+            return this.$store.state.platforms;
         }
     },
     methods: {
-        async fetchData(){
-            var res2 = await this.$axios.get('/platform')
-            this.platforms = res2.data.data
-            // this.$store.commit("setPlatforms", this.platforms)
-        },
         addPlatform() {
             this.$router.push('/addplatform');
         }
     },
-    async mounted() {
-        // console.log(this.platforms)
-        await this.fetchData()
-
-    }
 })
 </script>
 
@@ -76,7 +64,6 @@ export default defineComponent({
 
 .platform-item {
     width: 150px;
-    height: 250px;
 }
 
 .platform-card {

@@ -8,8 +8,8 @@
                 {{game.name}}
             </h1>
             <div class="info-platforms">
-                <div v-for="platform in game.platforms" :key="platform._id" >
-                    {{ platform.name }}
+                <div v-for="platform in $store.getters.filteredPlatformNames(game.platforms)" :key="platform" >
+                    {{ platform }}
                 </div>
             </div>
 
@@ -44,10 +44,6 @@ export default defineComponent({
     methods: {
         getReleaseDate(){
             let newDate = new Date(this.game.releaseDate);
-            // let day = newDate.getDay();
-            // let month = newDate.getMonth();
-            // let year = newDate.getFullYear();
-            // let date = `${day} - ${month} - ${year}`
             let date = newDate.toDateString();
             return date;
         }

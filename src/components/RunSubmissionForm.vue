@@ -10,7 +10,7 @@
 
                 <el-form-item label="Platform">
                     <el-select v-model="runnedPlatform">
-                        <el-option v-for="platform in game.platforms" :key="platform.name" :label="platform.name" :value="platform._id"/>
+                        <el-option v-for="platform in $store.getters.filteredPlatforms(game.platforms)" :key="platform" :label="platform.name" :value="platform._id"/>
                     </el-select>
                 </el-form-item>
 
@@ -45,8 +45,6 @@
 
 <script lang="ts">
 import { defineComponent} from 'vue';
-import { Game } from '@/models/game';
-import { Player } from '@/models/player';
 import type { Category } from '@/models/category';
 import type { Platform } from '@/models/platform';
 import { Run } from '@/models/run';
