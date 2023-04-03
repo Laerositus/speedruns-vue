@@ -75,7 +75,7 @@ export default defineComponent({
             } else {
                 ElMessage({
                     showClose: true,
-                    duration: 1000,
+                    duration: 1500,
                     message: "You need to be logged in to submit a run.",
                     type: "warning",
                 });

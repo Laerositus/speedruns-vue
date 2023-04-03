@@ -6,7 +6,6 @@
 
 
     <!-- <PlatformInfoBar :platform="platform" /> 
-    <PlatformLeaderboard :platform="platform" />
     <PlatformStats :platform="platform" /> -->
     <el-button v-if="!editMode" @click="goToEditPage"> Edit platform </el-button>
 </template>

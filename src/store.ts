@@ -8,7 +8,7 @@ const state = {
     games: [],
     platforms: [],
     runs: [],
-    loggedIn: false,
+    loggedIn: true,
     loggedInPlayer: PLAYERS[0]
 }
 
@@ -81,11 +81,12 @@ const mutations = {
         state.loggedIn = true;
         
         state.loggedInPlayer = player;
-        console.log("Logged in player:");
-        console.log(state.loggedInPlayer);
+        // console.log("Logged in player:");
+        // console.log(state.loggedInPlayer);
     },
     logOut(state: any){
         state.loggedIn = false;
+        state.loggedInPlayer = null;
     }
 }
 
