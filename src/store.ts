@@ -56,7 +56,6 @@ const mutations = {
                 state.runs.push(run);
             })
             game.playerCount = playersInRuns.length;
-
         });
     },
     updateGame(state: any, updatedGame: any){

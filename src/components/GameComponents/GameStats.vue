@@ -6,26 +6,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineProps } from 'vue'
-import { Game } from '@/models/game'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'GameStats',
-    props: [ 'game'],
+    props: ['game'],
     data() {
-        return {
-            playerCount: '',
-            runCount: '',
-            
-        }
+        return { }
     },
     methods: {
-        
-    },
-    watch: {
-        game() {
-            
-        }
     },
     created() {
     }

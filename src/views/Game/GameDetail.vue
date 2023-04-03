@@ -2,7 +2,7 @@
     <div class="detail-body">
         <div class="left-side">
             <GameInfoBar :game="game"/>
-            <GameLeaderboard :game="game" />
+            <GameLeaderboard :game="game" :runs="runs"/>
         </div>
         <div>
             <div class="detail-buttons">
@@ -24,6 +24,7 @@ import { ElButton } from 'element-plus'
 <script lang="ts">
 import { ElMessage } from 'element-plus'
 import { defineComponent } from 'vue'
+import type { Run } from '@/models/run'
 
 import type {AxiosInstance} from 'axios'
 
@@ -39,19 +40,29 @@ export default defineComponent({
         return {
             id: '',
             editMode: false,
+            runs: new Array<Run>(),
         }
     },
     computed: {
         game() {
-            return this.$store.state.games.find((game: { _id: string } ) => game._id == this.id)
-        }
+            let g = this.$store.state.games.find((game: { _id: string } ) => game._id == this.id);
+            this.runs = this.$store.getters.runListByGame(g);
+            g.totalRuns = this.runs.length;
+            g.playerCount = 0;
+            var playersInRuns = new Array<string>();
+            this.runs.forEach(run => {
+                if(!playersInRuns.includes(run.player)) {
+                    g.playerCount ++;
+                }
+            })
+            return g;
+        },
     },
     methods: {
         async deleteGame() {
             console.log("Delete game called");
             const res = await this.$axios.delete('/game/'+1)
-            console.log(res);
-            
+            console.log(res);            
         },
         toggleEdit() {
             this.editMode = !this.editMode;

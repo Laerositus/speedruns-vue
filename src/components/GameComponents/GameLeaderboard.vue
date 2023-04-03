@@ -47,13 +47,7 @@ import type { Run } from '@/models/run'
 
 export default defineComponent({
     name: 'GameLeaderboard',
-    props: [ 'game'],
-    computed: {
-        runs(): Run[] {
-            const runs = this.$store.getters.runListByGame(this.game);
-            return runs;
-        },
-    },
+    props: [ 'runs', 'game'],
     data() {
         return {
         }
