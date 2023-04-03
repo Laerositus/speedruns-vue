@@ -80,7 +80,6 @@ export default defineComponent({
             return this.game.platforms.find((platform: {_id: string}) =>platform._id == id);
         },
         async submitRun() {
-            let placement = this.findPlacement();
             let player = this.$store.state.loggedInPlayer.playername;
 
             const newRun = {
@@ -89,14 +88,11 @@ export default defineComponent({
                 time: this.runnedTime,
                 platform: this.runnedPlatform,
                 player: player,
-                placement: placement,
                 videoLink: this.runnedVideoLink
             };
-
             // console.log(newRun);
 
             let res;
-
             try {
                 res = await this.$axios.post('/run', newRun);
                 // console.log(res.data);
@@ -105,21 +101,19 @@ export default defineComponent({
                     res.data.data._id, 
                     newRun.game, newRun.category, 
                     newRun.time, newRun.platform, 
-                    newRun.player, newRun.placement, 
+                    player, 0, 
                     newRun.videoLink );
 
                 // console.log(run);
                 this.$store.commit('addRun', run);
                 this.$router.back();
             } catch(err) {
-                // console.log(err);
+                console.log(err);
                 console.log(res);
             }
         },
         findPlacement(){
             let currentplacement = -1;
-            const allruns = this.$store.getters.runListByGame(this.game);
-            
 
             return currentplacement;
         },

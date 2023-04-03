@@ -22,8 +22,26 @@ const mutations = {
         // console.log("Mutation setPlatforms called");
         state.platforms = platforms;
     },
-    setRuns(state: any, runs: Run[]) {
-        state.runs = runs;
+    setRuns(state: any, runs: any) {
+        const sortRuns = (runsToSort: any) => {
+            const timeInSeconds = (time : {hours: number, minutes: number, seconds: number}) => time.hours * 60 * 60 + time.minutes * 60 + time.seconds;
+            const sortedRuns = runsToSort.sort((
+                a: { time: { hours: number; minutes: number; seconds: number } },
+                b: { time: { hours: number; minutes: number; seconds: number } }
+                ) => timeInSeconds(a.time)-timeInSeconds(b.time));
+            return sortedRuns;
+        };
+
+        state.games.forEach((game: Game) => {
+            const runList = runs.filter((run: {game: string}) => run.game == game._id);
+            const sortedRuns = sortRuns(runList);
+            var i = 1;
+            sortedRuns.forEach((run: Run) => {
+                run.placement = i;
+                i++ ;
+                state.runs.push(run);
+            })
+        });
     },
     updateGame(state: any, updatedGame: any){
         // console.log("Mutation updateGame called");
@@ -49,10 +67,14 @@ const mutations = {
         state.platforms = state.platforms.filter((platform: any) => platform._id !== removedPlatformId);
     },
     addRun(state: any, run: Run) {
-        state.runs.push(run);
+        let runs = state.runs;
+        runs.push(run);
+        this.commit('setRuns', runs);
     },
     removeRun(state: any, removedRunId: string) {
-        state.runs = state.runs.filter((run: any) => run._id !== removedRunId);
+        const runs = state.runs;
+        const filteredRuns = runs.filter((run: any) => run._id !== removedRunId);
+        state.commit('setRuns', filteredRuns);
     },
     logIn(state: any, player: any){
         // console.log("Mutation logIn called");
@@ -67,12 +89,11 @@ const mutations = {
     }
 }
 
-const actions = {}
+const actions = {
+    
+}
 
 const getters = {
-    // runCount (state:any, game: Game) {
-    //     // return state.game.runs.length;
-    // },
     runsSorted (state:any, runs: Run[]): Run[] {
         const timeInSeconds = (time : {hours: number, minutes: number, seconds: number}) => time.hours * 60 * 60 + time.minutes * 60 + time.seconds;
         const sortedRuns = runs.sort((a,b) => timeInSeconds(a.time)-timeInSeconds(b.time));
@@ -90,12 +111,6 @@ const getters = {
         const runList = state.runs.filter((run: {game: string}) => run.game == game._id);
         return runList;
     },
-    findPlacementByGame: (state:any) => (game: Game, time: {hours: number, minutes: number, seconds: number}, category: string) => {
-        const allRuns = state.getters.runListByGame(game);
-        const filteredRuns = allRuns.filter((run: { category: string }) => run.category == category);
-        const sortedRuns = state.getters.runsSortedByCategory(filteredRuns);
-    }
-
 }
 
 const modules = {}
