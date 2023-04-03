@@ -78,10 +78,18 @@ export default {
       this.$store.commit("setPlatforms", platforms);
     },
 
+    async fetchRuns() {
+      let res = await this.$axios.get('/run');
+      let runs = res.data.data;
+
+      this.$store.commit("setRuns", runs);
+    }
+
   },
   async created() {
     await this.fetchGames();
     await this.fetchPlatforms();
+    await this.fetchRuns();
   }
 }
 

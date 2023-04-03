@@ -30,12 +30,7 @@ import { Game } from '@/models/game'
 
 export default defineComponent({
     name: 'GameInfoBar',
-    props: {
-        game: {
-            type: Game,
-            default: {}
-        }
-    },
+    props: [ 'game'],
     data() {
         return {
             rDate: this.getReleaseDate(),

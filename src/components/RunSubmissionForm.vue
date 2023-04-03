@@ -22,9 +22,9 @@
                 </el-form-item>
 
                 <el-form-item label="Time"> 
-                    <el-input-number v-model="runnedTime.hours" class="time-input" :min="0" /> <span class="time-label">:</span>
-                    <el-input-number v-model="runnedTime.minutes" class="time-input" :min="0"  /> <span class="time-label">:</span>
-                    <el-input-number v-model="runnedTime.seconds" class="time-input" :min="0" />
+                    <el-input-number v-model="runnedTime.hours" class="time-input" :min="0" /> <span class="time-label">H</span>
+                    <el-input-number v-model="runnedTime.minutes" class="time-input" :min="0" :max="59" /> <span class="time-label">M</span>
+                    <el-input-number v-model="runnedTime.seconds" class="time-input" :min="0" :max="59" /> <span class="time-label">S</span>
                 </el-form-item>
 
                 <el-form-item label="Link to video">
@@ -49,7 +49,7 @@ import { Game } from '@/models/game';
 import { Player } from '@/models/player';
 import type { Category } from '@/models/category';
 import type { Platform } from '@/models/platform';
-import type { Run } from '@/models/run';
+import { Run } from '@/models/run';
 
 export default defineComponent({
     name: 'RunSubmissionForm',
@@ -65,8 +65,6 @@ export default defineComponent({
                 minutes: 0,
                 seconds: 0,
             },
-            runnedPlayer: new Player("Laerositus"),
-            runnedPlacement: 1,
             runnedVideoLink: '',
         }
     },
@@ -82,16 +80,48 @@ export default defineComponent({
             return this.game.platforms.find((platform: {_id: string}) =>platform._id == id);
         },
         async submitRun() {
+            let placement = this.findPlacement();
+            let player = this.$store.state.loggedInPlayer.playername;
+
             const newRun = {
-                game: this.game,
-                category: this.getCat(this.runnedCategory),
+                game: this.game._id,
+                category: this.runnedCategory,
                 time: this.runnedTime,
-                platform: this.getPlat(this.runnedPlatform),
-                player: this.runnedPlayer,
-                placement: this.runnedPlacement,
+                platform: this.runnedPlatform,
+                player: player,
+                placement: placement,
                 videoLink: this.runnedVideoLink
+            };
+
+            // console.log(newRun);
+
+            let res;
+
+            try {
+                res = await this.$axios.post('/run', newRun);
+                // console.log(res.data);
+
+                let run = new Run(
+                    res.data.data._id, 
+                    newRun.game, newRun.category, 
+                    newRun.time, newRun.platform, 
+                    newRun.player, newRun.placement, 
+                    newRun.videoLink );
+
+                // console.log(run);
+                this.$store.commit('addRun', run);
+                this.$router.back();
+            } catch(err) {
+                // console.log(err);
+                console.log(res);
             }
-            console.log(newRun);
+        },
+        findPlacement(){
+            let currentplacement = -1;
+            const allruns = this.$store.getters.runListByGame(this.game);
+            
+
+            return currentplacement;
         },
         log(msg: any) {
             console.log(msg);
@@ -104,11 +134,12 @@ export default defineComponent({
 <style scoped>
 .time-input {
     width: 80px;
-    margin: 0px 10px;
+    margin-left: 15px;
 }
 
 .time-label {
     font-size: 20px;
     font-weight: bold;
+    margin-left: 5px;
 }
 </style>

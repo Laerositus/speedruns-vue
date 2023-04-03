@@ -21,7 +21,7 @@ export class Player {
         this.creationDate = creationDate;
         this.discord = discord;
         this.steam = steam;
-        this.twitch =twitch;
-        this.youtube =youtube;        
+        this.twitch = twitch;
+        this.youtube = youtube;        
     }
 }

@@ -11,12 +11,7 @@ import { Game } from '@/models/game'
 
 export default defineComponent({
     name: 'GameStats',
-    props: {
-        game: {
-            type: Game,
-            default: {}
-        }
-    },
+    props: [ 'game'],
     data() {
         return {
             playerCount: '',

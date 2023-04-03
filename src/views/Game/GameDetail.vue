@@ -23,6 +23,7 @@ import { ElButton } from 'element-plus'
 
 <script lang="ts">
 import { GAMES } from '../../mock-data'
+import { ElMessage } from 'element-plus'
 import { defineComponent } from 'vue'
 import GameInfoBar from '@/components/GameComponents/GameInfoBar.vue'
 import GameLeaderboard from '@/components/GameComponents/GameLeaderboard.vue'
@@ -68,7 +69,17 @@ export default defineComponent({
         },
         goToSubmitRunPage() {
             // console.log("Moving to submit run view");
-            this.$router.push('/submit/'+this.id);
+
+            if(this.$store.state.loggedIn) {
+                this.$router.push('/submit/'+this.id);
+            } else {
+                ElMessage({
+                    showClose: true,
+                    duration: 1000,
+                    message: "You need to be logged in to submit a run.",
+                    type: "warning",
+                });
+            };
         },
     },
     created() {
