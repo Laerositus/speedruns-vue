@@ -83,8 +83,8 @@ export default defineComponent({
                     return;
                 }
 
-                console.log("Response user");
-                console.log(res)
+                // console.log("Response user");
+                // console.log(res)
 
                 let playerData = res.data.data;
                 let loginPlayer = new Player(playerData.playername, playerData.totalRuns, playerData.creationDate, playerData.discord, playerData.steam, playerData.twitch, playerData.youtube);
