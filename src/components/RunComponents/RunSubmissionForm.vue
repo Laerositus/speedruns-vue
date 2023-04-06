@@ -55,6 +55,13 @@ import { Run } from '@/models/run';
 import type { FormInstance, FormRules } from 'element-plus';
 import utils from '@/utils';
 
+const validateTime = (rule: any, value: any, callback: any) => {
+    const time = value.hours * 3600 + value.minutes * 60 + value.seconds;
+    if (time == 0) {
+        callback(new Error('Please enter a time above zero'));
+    } else { callback()}
+}
+
 export default defineComponent({
     name: 'RunSubmissionForm',
     props: [ 'game' ],
@@ -80,7 +87,7 @@ export default defineComponent({
                     { required: true, message: 'Please select a category', trigger: 'change'}
                 ],
                 time: [
-                    { required: true, message: 'Please select a time', trigger: 'blur'}
+                    { required: true, validator: validateTime, trigger: 'blur'}
                 ],
                 videoLink: [
                     
