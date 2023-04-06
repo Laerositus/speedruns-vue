@@ -1,5 +1,6 @@
 import type { Run } from '@/models/run'
 import type { Game } from '@/models/game'
+import type { FormInstance } from 'element-plus';
 
 export default ({
     sortAndPlaceRuns(games: Game[], runs: Run[]) {
@@ -27,4 +28,18 @@ export default ({
         });
         return resRuns;
     },
+    async validateFields(formEl: FormInstance | undefined): Promise<boolean> {
+        let p = new Promise<boolean>( async (resolve, reject) => {
+            if(!formEl) reject(false);
+
+            await formEl?.validate((valid, fields) => {
+                if(!valid) {
+                    reject(false);
+                }
+            })
+            resolve(true);
+        })
+        console.log(p);
+        return p;
+    }
 });

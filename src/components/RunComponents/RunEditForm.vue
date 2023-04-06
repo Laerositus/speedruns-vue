@@ -3,31 +3,31 @@
         <h1 class="header">Editing run</h1>
 
         <div class="form">
-            <el-form>
+            <el-form ref="ruleFormRef" :model="run" :rules="rules">
                 <el-form-item label="Game name">
                     <el-input v-model="game.name" disabled/>
                 </el-form-item>
 
                 <el-form-item label="Platform">
-                    <el-select v-model="run.platform">
+                    <el-select v-model="run.platform" prop="platform">
                         <el-option v-for="platform in $store.getters.filteredPlatforms(game.platforms)" :key="platform" :label="platform.name" :value="platform._id"/>
                     </el-select>
                 </el-form-item>
 
                 <el-form-item label="Category">
-                    <el-select v-model="run.category">
+                    <el-select v-model="run.category" prop="category">
                         <el-option v-for="cat in game.categories" :key="cat.name" :label="cat.name" :value="cat._id"/>
                     </el-select>
 
                 </el-form-item>
 
-                <el-form-item label="Time"> 
+                <el-form-item label="Time" prop="time"> 
                     <el-input-number v-model="run.time.hours" class="time-input" :min="0" /> <span class="time-label">H</span>
                     <el-input-number v-model="run.time.minutes" class="time-input" :min="0" :max="59" /> <span class="time-label">M</span>
                     <el-input-number v-model="run.time.seconds" class="time-input" :min="0" :max="59" /> <span class="time-label">S</span>
                 </el-form-item>
 
-                <el-form-item label="Link to video">
+                <el-form-item label="Link to video" prop="videoLink">
                     <el-input v-model="run.videoLink"/>
                 </el-form-item>
 
@@ -35,7 +35,7 @@
         </div>
 
         <div class="buttons">
-            <el-button type="primary" @click="submitRun">Submit</el-button>
+            <el-button type="primary" @click="submitRun(ruleFormRef)">Submit</el-button>
             <el-button type="primary" @click="$router.back()">Cancel</el-button>
             <el-button type="danger" @click="deleteRun">Delete run</el-button>
         </div>
@@ -44,16 +44,37 @@
     
 </template>
 
+<script lang="ts" setup>
+const ruleFormRef = ref<FormInstance>();
+</script>
+
+
 <script lang="ts">
-import { defineComponent} from 'vue';
+import { defineComponent, reactive, ref} from 'vue';
 import type { Category } from '@/models/category';
 import type { Platform } from '@/models/platform';
+import type { FormInstance, FormRules } from 'element-plus';
+import utils from '@/utils';
 
 export default defineComponent({
     name: 'RunSubmissionForm',
     props: [ 'run' ],
     data() {
         return {
+            rules: reactive<FormRules>({
+                platform: [
+                    { required: true, message: 'Please select a platform', trigger: 'change'}
+                ],
+                category: [
+                    { required: true, message: 'Please select a category', trigger: 'change'}
+                ],
+                time: [
+                    { type: 'date', required: true, message: 'Please select a time', trigger: 'blur'}
+                ],
+                videoLink: [
+
+                ],
+            })
         }
     },
     computed: {
@@ -70,7 +91,8 @@ export default defineComponent({
         getPlat(id: string): Platform {
             return this.game.platforms.find((platform: {_id: string}) =>platform._id == id);
         },
-        async submitRun() {
+        async submitRun(formEl: FormInstance | undefined) {
+            if(!utils.validateFields(formEl)) return;
             let player = this.$store.state.loggedInPlayer.playername;
 
             let res;

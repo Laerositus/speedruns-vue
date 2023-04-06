@@ -3,42 +3,35 @@
         <h1> Edit {{ platform.name }}</h1>
     </div>
 
-    <el-form >
-        <el-form-item label="platform Name" >
+    <el-form ref="ruleFormRef" :rules="rules" :model="platform">
+        <el-form-item label="platform Name" prop="name">
             <el-input v-model="platform.name"/>
         </el-form-item>
 
-        <el-form-item label="ReleaseDate">
+        <el-form-item label="ReleaseDate" prop="releaseDate">
             <el-date-picker v-model="platform.releaseDate"/>
         </el-form-item>
 
     </el-form>
 
-    <el-button type="primary" @click="editplatform">Save platform</el-button>
+    <el-button type="primary" @click="editplatform(ruleFormRef)">Save platform</el-button>
     <el-button @click="$router.back()">Cancel</el-button>
     <el-button type="danger" @click="deleteplatform">Delete platform</el-button>
 
 </template>
+<script lang="ts" setup>
 
-<script setup lang="ts">
-import { 
-    ElButton, 
-    ElForm, 
-    ElInput, 
-    ElFormItem, 
-    ElCheckboxGroup, 
-    ElCheckbox, 
-    ElDatePicker, 
-    ElInputNumber 
-} from 'element-plus'
+const ruleFormRef = ref<FormInstance>();
 </script>
+
 
 <script lang="ts">
 import type { Platform } from '../../models/platform'
-import { PLATFORMS, GAMES , CATEGORIES } from '../../mock-data'
-import { defineComponent } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 
 import type {AxiosInstance} from 'axios'
+import type { FormInstance, FormRules } from 'element-plus'
+import utils from '@/utils';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -51,6 +44,15 @@ export default defineComponent({
     data() {
         return {
             id: '',
+            rules: reactive<FormRules>({
+                name: [
+                    { required: true, message: 'Please enter a platform name', trigger: 'blur'},
+                    { min: 1, message: 'Length should be at least 1', trigger: 'blur'},
+                ],
+                releaseDate: [
+                    { type: 'date', required: true, message: 'Please enter a game release date', trigger: 'blur'}
+                ]
+            })
         }
     },
     computed: {
@@ -60,7 +62,9 @@ export default defineComponent({
         }
     },
     methods: {
-        async editplatform() {
+        async editplatform(formEl: FormInstance | undefined) {
+            if(!utils.validateFields(formEl)) return;
+
             const res = await this.$axios.put('/platform/'+ this.id, this.platform)
             console.log("Move to platformDetail view");
 

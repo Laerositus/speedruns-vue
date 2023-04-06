@@ -3,50 +3,48 @@
         <h1> Add a new game</h1>
     </div>
     
-    <el-form >
-        <el-form-item label="Game Name" >
-            <el-input v-model="gameName"/>
+    <el-form 
+        ref="ruleFormRef"
+        :model="game"
+        :rules="rules"
+    >
+        <el-form-item label="Game Name" prop="name">
+            <el-input v-model="game.name"/>
         </el-form-item>
 
-        <el-form-item label="Platforms">
+        <el-form-item label="Platforms" prop="platforms">
             <div class="form-platforms" >
-                <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="gamePlatforms" class="platforms-group">
+                <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="game.platforms" class="platforms-group">
                     <el-checkbox :label="platform.name" class="platforms-item"/>
                 </el-checkbox-group>
             </div>
         </el-form-item>
         
-        <el-form-item label="Image URL">
-            <el-input v-model="gameImage" />
+        <el-form-item label="Image URL" prop="image">
+            <el-input v-model="game.image" />
         </el-form-item>
 
-        <el-form-item label="ReleaseDate">
-            <el-date-picker type="date" v-model="gameReleaseDate" />            
+        <el-form-item label="ReleaseDate" prop="releaseDate">
+            <el-date-picker type="date" v-model="game.releaseDate" />            
         </el-form-item>
         
     </el-form>    
     
-    <el-button type="primary" @click="addGame">Save game</el-button>
-    <el-button type="danger" @click="cancel">Cancel</el-button>
+    <el-button type="primary" @click="addGame(ruleFormRef)">Save game</el-button>
+    <el-button type="danger" @click="$router.back()">Cancel</el-button>
 </template>
 
-<script setup lang="ts">
-import { 
-    ElButton, 
-    ElForm, 
-    ElInput, 
-    ElFormItem, 
-    ElCheckboxGroup, 
-    ElCheckbox, 
-    ElDatePicker, 
-    ElInputNumber 
-} from 'element-plus'
-
+<script lang="ts" setup >
+import { ref } from 'vue'
+const ruleFormRef = ref<FormInstance>();
 </script>
 
 <script lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import { reactive} from 'vue'
 import { Game } from '../../models/game'
-import { defineComponent } from 'vue'
+import { defineComponent, } from 'vue'
+import utils from '@/utils'
 
 import type {AxiosInstance} from 'axios'
 
@@ -60,21 +58,43 @@ export default defineComponent({
     name: 'GameAdd',
     data() {
         return {
-            gameName: '',
-            gamePlatforms: [],
-            gameReleaseDate: '',
-            gameImage: '',
+            game: {
+                name: '',
+                platforms: [],
+                releaseDate: '',
+                image: ''
+            },
+            
+            rules: reactive<FormRules>({
+                name: [
+                    { required: true, message: 'Please enter a game name', trigger: 'blur'},
+                    { min: 1, message: 'Length should be at least 1', trigger: 'blur'},
+                ],
+                platforms: [
+                    { 
+                        type: 'array',
+                        required: true,
+                        message: 'Please check at least one game platform',
+                        trigger: 'change'
+                    }
+                ],
+                releaseDate: [
+                    { type: 'date', required: true, message: 'Please enter a game release date', trigger: 'blur'}
+                ]
+            }),
         }
     },
     methods: {
-        async addGame() {
-            const platformIDs = this.$store.getters.filteredPlatformIDs(this.gamePlatforms);
+        async addGame(formEl: FormInstance | undefined) {
+            if(!utils.validateFields(formEl)) return;
+            try {
+                const platformIDs = this.$store.getters.filteredPlatformIDs(this.game.platforms);
 
             let game = {
-                "name": this.gameName,
+                "name": this.game.name,
                 "platforms": platformIDs,
-                "releaseDate": this.gameReleaseDate,
-                "image": this.gameImage,
+                "releaseDate": this.game.releaseDate,
+                "image": this.game.image,
                 "categories": [
                     {
                         "_id": 0,
@@ -101,16 +121,13 @@ export default defineComponent({
 
             this.$store.commit('addGame', newGame);
             this.$router.push('/');
+            }
+            catch (e: any) {
+                console.log(e.message);
+            }
         },
-        cancel() {
-            this.$router.push('/');
-        },
-        log() {
-            console.log(this.gamePlatforms);
-        }
     },
 })
-
 </script>
 
 <style>
@@ -131,10 +148,6 @@ export default defineComponent({
 
 .platforms-item {
     margin-left: 10px;
-}
-
-.el-checkbox__label {
-    margin-left: 5px;
 }
 
 </style>

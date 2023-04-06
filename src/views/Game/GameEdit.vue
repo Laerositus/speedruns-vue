@@ -3,54 +3,49 @@
         <h1> Edit {{ game.name }}</h1>
     </div>
     
-    <el-form >
-        <el-form-item label="Game Name" >
+    <el-form 
+        ref="ruleFormRef"
+        :model="game"
+        :rules="rules"
+    >
+        <el-form-item label="Game Name" prop="name">
             <el-input v-model="game.name"/>
         </el-form-item>
 
-        <el-form-item label="Platforms">
+        <el-form-item label="Platforms" prop="platforms">
             <div class="form-platforms">
                 <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="gamePlatforms" class="platforms-group">
                     <el-checkbox :label="platform.name" :checked="gameContainsPlatform(platform)" class="platforms-item"/>
                 </el-checkbox-group>
             </div>
         </el-form-item>
-        <!-- <el-form-item label="Categories">
-            <el-checkbox-group v-for="category in game.categories" :key="category._id" v-model="game.categories">
-                <el-checkbox :label="category.name"/>
-            </el-checkbox-group>
-        </el-form-item> -->
-        <el-form-item label="Image URL:">
+
+        <el-form-item label="Image URL:" prop="image">
             <el-input v-model="game.image" />
         </el-form-item>
         
-        <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="game.releaseDate"/>                
+        <el-form-item label="ReleaseDate" prop="releaseDate">
+            <el-date-picker v-model="game.releaseDate"/>
         </el-form-item>
     </el-form>
 
     <!-- <el-button v-if="editMode" v-on:click="editGame">Save changes</el-button> -->
-    <el-button type="danger" @click="editGame">Save game</el-button>
+    <el-button type="danger" @click="editGame(ruleFormRef)">Save game</el-button>
     <el-button type="danger" @click="deleteGame">Delete game</el-button>
 </template>
 
-<script setup lang="ts">
-import { 
-    ElButton, 
-    ElForm, 
-    ElInput, 
-    ElFormItem, 
-    ElCheckboxGroup, 
-    ElCheckbox, 
-    ElDatePicker, 
-    ElInputNumber 
-} from 'element-plus'
+<script lang="ts" setup >
+import { ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
+const ruleFormRef = ref<FormInstance>();
 </script>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { Game } from '@/models/game'
 import type { Platform } from '@/models/platform';
+import utils from '@/utils';
 
 export default defineComponent({
     name: 'GameDetail',
@@ -58,6 +53,23 @@ export default defineComponent({
         return {
             id: '',
             gamePlatforms: [],
+            rules: reactive<FormRules>({
+                name: [
+                    { required: true, message: 'Please enter a game name', trigger: 'blur'},
+                    { min: 1, message: 'Length should be at least 1', trigger: 'blur'},
+                ],
+                platforms: [
+                    { 
+                        type: 'array',
+                        required: true,
+                        message: 'Please check at least one game platform',
+                        trigger: 'change'
+                    }
+                ],
+                releaseDate: [
+                    { type: 'date', required: true, message: 'Please enter a game release date', trigger: 'blur'}
+                ]
+            })
         }
     },
     computed: {
@@ -71,7 +83,9 @@ export default defineComponent({
             if (this.game.platforms.includes(platform._id)) return true;
             else return false;
         },
-        async editGame() {
+        async editGame(formEl: FormInstance | undefined) {
+            if(!utils.validateFields(formEl)) return;
+
             const platformIDs = this.$store.getters.filteredPlatformIDs(this.gamePlatforms);
 
             let game = {
