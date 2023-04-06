@@ -122,8 +122,8 @@ const mutations = {
     removeRun(state: any, removedRunId: string) {
         const runs = state.runs;
         const filteredRuns = runs.filter((run: any) => run._id !== removedRunId);
-        
         const newRuns = utils.sortAndPlaceRuns(state.games, filteredRuns);
+        state.runs = newRuns;
         
         if (state.games == undefined || newRuns == undefined) return;
         state.games.forEach((game: Game) => {
@@ -138,6 +138,7 @@ const mutations = {
             });
             game.playerCount = playersInRuns.length;
         });
+
     },
     logIn(state: any, player: any){
         // console.log("Mutation logIn called");
