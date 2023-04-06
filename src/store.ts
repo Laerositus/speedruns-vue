@@ -4,6 +4,7 @@ import type { Game } from '@/models/game'
 import type { Platform } from '@/models/platform'
 import type { Run } from '@/models/run'
 import { Category } from '@/models/category'
+import utils from '@/utils'
 
 const state = {
     games: new Array<Game>(),
@@ -30,41 +31,28 @@ const mutations = {
         state.platforms = platforms;
     },
     setRuns(state: any, runs: any) {
-        const sortRuns = (runsToSort: any) => {
-            const timeInSeconds = (time : {hours: number, minutes: number, seconds: number}) => time.hours * 60 * 60 + time.minutes * 60 + time.seconds;
-            const sortedRuns = runsToSort.sort((
-                a: { time: { hours: number; minutes: number; seconds: number } },
-                b: { time: { hours: number; minutes: number; seconds: number } }
-                ) => timeInSeconds(a.time)-timeInSeconds(b.time));
-            return sortedRuns;
-        };
-
-        if (state.games == undefined || runs == undefined) return;
+        const newRuns = utils.sortAndPlaceRuns(state.games, runs);
+        state.runs = newRuns;
+        
+        // Update games to match runs
+        if (state.games == undefined || newRuns == undefined) return;
         state.games.forEach((game: Game) => {
-            const runList = runs.filter((run: {game: string}) => run.game == game._id);
-            game.totalRuns = runList.length;            
-            const sortedRuns = sortRuns(runList);
+            const runList = newRuns.filter((run: {game: string}) => run.game == game._id);
+            game.totalRuns = runList.length;
             
             var playersInRuns = new Array<string>();
-            var i = 1;
-            sortedRuns.forEach((run: Run) => {
-                if(!playersInRuns.includes(run.player)){
+            newRuns.forEach((run: Run) => {
+                if (!playersInRuns.includes(run.player)){
                     playersInRuns.push(run.player);
                 }
-                run.placement = i;
-                i++;
-                state.runs.push(run);
-            })
+            });
             game.playerCount = playersInRuns.length;
         });
     },
-    updateGame(state: any, updatedGame: any){
+    updateGame(state: any, updatedGame: Game){
         // console.log("Mutation updateGame called");
-        state.games.forEach((game: any) => {
-            if (game._id == updatedGame._id) {
-                game = updatedGame;
-            }
-        })
+        const objIndex = state.games.findIndex((game: { _id: any }) => game._id == updatedGame._id);
+        state.games[objIndex] = updatedGame;
     },
     addGame(state: any, game: any){
         // console.log("Mutation addGame called");
@@ -73,7 +61,6 @@ const mutations = {
         if(state.games == undefined) {
             state.games = new Array<Game>();
         }
-
         state.games.push(game);
     },
     removeGame(state: any, removedGameId: any){
@@ -85,27 +72,78 @@ const mutations = {
         state.platforms.push(platform);
     },
     removePlatform(state: any, removedPlatformId: any){
-        // console.log("Mutation removeGame called");
         state.platforms = state.platforms.filter((platform: any) => platform._id !== removedPlatformId);
     },
     addRun(state: any, run: Run) {
         if(state.runs == undefined) { state.runs = new Array<Run>(); }
         let runs = state.runs;
         runs.push(run);
-        this.commit('setRuns', runs);
+
+        // Sort runs
+        const newRuns = utils.sortAndPlaceRuns(state.games, runs);
+
+        // Update games to match run/player count
+        if (state.games == undefined || newRuns == undefined) return;
+        state.games.forEach((game: Game) => {
+            const runList = newRuns.filter((run: {game: string}) => run.game == game._id);
+            game.totalRuns = runList.length;
+            
+            var playersInRuns = new Array<string>();
+            newRuns.forEach((run: Run) => {
+                if (!playersInRuns.includes(run.player)){
+                    playersInRuns.push(run.player);
+                }
+            });
+            game.playerCount = playersInRuns.length;
+        });
+
+    },
+    updateRun(state:any, updatedRun: Run) {
+        let runs = state.runs;
+        const rIndex = runs.findIndex((run: { _id: string }) => run._id == updatedRun._id);
+        runs[rIndex] = updatedRun;
+
+        const newRuns = utils.sortAndPlaceRuns(state.games, runs);
+        
+        if (state.games == undefined || newRuns == undefined) return;
+        state.games.forEach((game: Game) => {
+            const runList = newRuns.filter((run: {game: string}) => run.game == game._id);
+            game.totalRuns = runList.length;
+            
+            var playersInRuns = new Array<string>();
+            newRuns.forEach((run: Run) => {
+                if (!playersInRuns.includes(run.player)){
+                    playersInRuns.push(run.player);
+                }
+            });
+            game.playerCount = playersInRuns.length;
+        });
     },
     removeRun(state: any, removedRunId: string) {
         const runs = state.runs;
         const filteredRuns = runs.filter((run: any) => run._id !== removedRunId);
-        state.commit('setRuns', filteredRuns);
+        
+        const newRuns = utils.sortAndPlaceRuns(state.games, filteredRuns);
+        
+        if (state.games == undefined || newRuns == undefined) return;
+        state.games.forEach((game: Game) => {
+            const runList = newRuns.filter((run: {game: string}) => run.game == game._id);
+            game.totalRuns = runList.length;
+            
+            var playersInRuns = new Array<string>();
+            newRuns.forEach((run: Run) => {
+                if (!playersInRuns.includes(run.player)){
+                    playersInRuns.push(run.player);
+                }
+            });
+            game.playerCount = playersInRuns.length;
+        });
     },
     logIn(state: any, player: any){
         // console.log("Mutation logIn called");
         state.loggedIn = true;
         
         state.loggedInPlayer = player;
-        // console.log("Logged in player:");
-        // console.log(state.loggedInPlayer);
     },
     logOut(state: any){
         state.loggedIn = false;
@@ -113,9 +151,7 @@ const mutations = {
     }
 }
 
-const actions = {
-    
-}
+const actions = { }
 
 const getters = {
     runsSorted (state:any, runs: Run[]): Run[] {

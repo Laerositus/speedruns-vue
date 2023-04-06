@@ -28,8 +28,10 @@ declare module '@vue/runtime-core' {
     GameInfoBar: typeof import('./src/components/GameComponents/GameInfoBar.vue')['default']
     GameLeaderboard: typeof import('./src/components/GameComponents/GameLeaderboard.vue')['default']
     GameStats: typeof import('./src/components/GameComponents/GameStats.vue')['default']
+    PlayerRunsBoard: typeof import('./src/components/PlayerComponents/PlayerRunsBoard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    RunSubmissionForm: typeof import('./src/components/RunSubmissionForm.vue')['default']
+    RunEditForm: typeof import('./src/components/RunComponents/RunEditForm.vue')['default']
+    RunSubmissionForm: typeof import('./src/components/RunComponents/RunSubmissionForm.vue')['default']
   }
 }

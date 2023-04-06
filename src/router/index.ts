@@ -70,6 +70,11 @@ const router = createRouter({
       name: 'submit',	
       component: () => import('../views/Run/RunSubmit.vue')
     },
+    {
+      path: '/runedit/:id',
+      name: 'runedit',
+      component: () => import('../views/Run/RunEdit.vue')
+    }
   ]
 })
 

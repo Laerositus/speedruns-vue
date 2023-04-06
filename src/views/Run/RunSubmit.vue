@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import RunSubmissionForm from '@/components/RunSubmissionForm.vue'
+import RunSubmissionForm from '@/components/RunComponents/RunSubmissionForm.vue'
 
 export default defineComponent({
     name: 'Submit',

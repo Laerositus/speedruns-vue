@@ -14,7 +14,6 @@
             </div>            
         </el-form>
     </div>
-
 </template>
 
 <script lang="ts">
@@ -82,9 +81,6 @@ export default defineComponent({
                     console.log("No player found");
                     return;
                 }
-
-                // console.log("Response user");
-                // console.log(res)
 
                 let playerData = res.data.data;
                 let loginPlayer = new Player(playerData.playername, playerData.totalRuns, playerData.creationDate, playerData.discord, playerData.steam, playerData.twitch, playerData.youtube);

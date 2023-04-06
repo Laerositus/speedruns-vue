@@ -6,10 +6,7 @@ import { Film } from '@element-plus/icons-vue'
 <template>
     <h1>Leaderboard</h1>
 
-    <el-table 
-    stripe 
-    :data="runs"
-    :default-sort="{ prop: 'placement', order: 'ascending' }">
+    <el-table stripe :data="runs">
             <el-table-column prop="placement" label="Placement"/>
             <el-table-column prop="player" label="Player"/>
             <el-table-column label="Platform">
@@ -49,24 +46,29 @@ import { defineComponent } from 'vue'
 import type { Run } from '@/models/run'
 
 export default defineComponent({
-    name: 'GameLeaderboard',
-    props: [ 'runs', 'game'],
+    name: 'PlayerRunsBoard',
+    props: [ 'player'],
     data() {
         return {
         }
     },
+    computed: {
+        runs() {
+
+        }
+    },
     methods: {
         getCategory(catID: string): string {
-            const cat = this.game.categories.find((el: { _id: string; }) => el._id == catID);
-            if(cat) return cat.name
-            else return ''
+            // const cat = this.game.categories.find((el: { _id: string; }) => el._id == catID);
+            // return cat.name;
+            return '';
         },
         getPlatform(platformID: string): string {
             const plat = this.$store.state.platforms.find((el: { _id: string; }) => el._id == platformID);            
             return plat.name;
         },
         routingRunDetail(id: string){
-            this.$router.push('/runedit/' + id);
+            this.$router.push('/run/' + id);
         },
         openVideoLink(url: string) {
             window?.open(url, '_blank').focus();

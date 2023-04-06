@@ -6,7 +6,7 @@
         </div>
         <div>
             <div class="detail-buttons">
-                <!-- <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button> -->
+                <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button>
                 <el-button @click="goToSubmitRunPage"> Submit Run </el-button>
             </div>
             <GameStats :game="game" />
@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { ElButton } from 'element-plus'
-
 </script>
 
 
@@ -70,7 +69,7 @@ export default defineComponent({
         },
         goToEditPage() {
             // console.log("Moving to edit view");
-            this.$router.push('/editGame/'+this.id);
+            this.$router.push('/editgame/'+this.id);
         },
         goToSubmitRunPage() {
             // console.log("Moving to submit run view");
