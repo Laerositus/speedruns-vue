@@ -14,7 +14,8 @@
                                 <span class="game-name">{{ game.name }}</span>
                                 <div class="game-platforms">
                                     <div v-for="platform in $store.getters.filteredPlatformNames(game.platforms)" :key="platform">
-                                        {{ platform }}
+                                        <div v-if="platform" > {{ platform }}  </div>
+                                        
                                     </div>
                                 </div>
 

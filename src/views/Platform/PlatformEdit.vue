@@ -1,42 +1,23 @@
 <template>
     <div class="body">
-        <h1> Edit platform page</h1>
-        <!-- {{platform.name}} -->
+        <h1> Edit {{ platform.name }}</h1>
     </div>
 
-    <!-- <platformInfoBar :platform="platform" />  -->
-    
     <el-form >
         <el-form-item label="platform Name" >
-            <el-input v-model="platformName"/>
+            <el-input v-model="platform.name"/>
         </el-form-item>
 
-        <!-- <el-form-item label="Platforms">
-            <el-checkbox-group v-for="platform in PLATFORMS" :key="platform" v-model="platformPlatforms">
-                <el-checkbox :label="platform.name" />
-            </el-checkbox-group>
-        </el-form-item> -->
         <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="platformReleaseDate" :placeholder="platformReleaseDate"/>                
+            <el-date-picker v-model="platform.releaseDate"/>
         </el-form-item>
-        <!-- <el-form-item label="TotalRuns">
-            <el-input-number v-model="platformTotalRuns" disabled="true" style="{background-color: white;}"/>
-        </el-form-item> -->
-        <!-- <el-form-item label="Categories">
-            <el-checkbox-group v-for="category in platformCategories" :key="category" v-model="platformPlatforms">
-                <el-checkbox :label="category.name"/>
-            </el-checkbox-group>
-        </el-form-item> -->
-        <!-- <el-form-item label="Image URL:">
-            <el-input v-model="platformImage" />
-        </el-form-item> -->
 
     </el-form>
 
-
-    <!-- <el-button v-if="editMode" v-on:click="editplatform">Save changes</el-button> -->
-    <el-button type="danger" @click="editplatform">Save platform</el-button>
+    <el-button type="primary" @click="editplatform">Save platform</el-button>
+    <el-button @click="$router.back()">Cancel</el-button>
     <el-button type="danger" @click="deleteplatform">Delete platform</el-button>
+
 </template>
 
 <script setup lang="ts">
@@ -70,51 +51,32 @@ export default defineComponent({
     data() {
         return {
             id: '',
-            platform: PLATFORMS[0],
-            // editedData: this.platform,
-            platformName: '',
-            platformGames: GAMES,
-            platformReleaseDate: new Date(),
+        }
+    },
+    computed: {
+        platform() {
+            const p = this.$store.state.platforms.find((p: Platform) => p._id == this.id);
+            return p;
         }
     },
     methods: {
-        async fetchplatform(id: any){
-            const res = await this.$axios.get('/platform/'+id)
-            // console.log(res.data.data)
-            this.platform = res.data.data;
-            this.fillDetails();
-        },
-        fillDetails() {
-            this.platformName = this.platform.name;
-            this.platformReleaseDate = this.platform.releaseDate;
-            // this.platformGames = this.platform.games;
-        },
         async editplatform() {
-            console.log("Save Changes called");
-            let platform = {
-                "id": this.id,
-                "name": this.platformName,
-                "releaseDate": this.platformReleaseDate,
-                "games": this.platformGames
-            }
-            console.log(platform);
-
-            const res = await this.$axios.put('/platform/'+ this.id, platform)
+            const res = await this.$axios.put('/platform/'+ this.id, this.platform)
             console.log("Move to platformDetail view");
+
+            this.$store.commit('updatePlatform', this.platform);
             this.$router.push('/platformdetail/'+this.id);
         },
         async deleteplatform() {
-            console.log("Delete platform called");
             const res = await this.$axios.delete('/platform/'+this.id)
             console.log(res);
 
+            this.$store.commit('removePlatform', this.platform._id);
             this.$router.push('/platforms');
         },
     },
-    async mounted() {
-        // console.log(this.platform)
+    created() {
         this.id = String(this.$route.params.id);
-        await this.fetchplatform(this.id);
     }
 })
 

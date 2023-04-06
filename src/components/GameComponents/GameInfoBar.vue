@@ -9,7 +9,7 @@
             </h1>
             <div class="info-platforms">
                 <div v-for="platform in $store.getters.filteredPlatformNames(game.platforms)" :key="platform" >
-                    {{ platform }}
+                    <a v-if="platform" @click="goToPlatform(platform)"> {{ platform }} </a>
                 </div>
             </div>
 
@@ -46,6 +46,10 @@ export default defineComponent({
             let newDate = new Date(this.game.releaseDate);
             let date = newDate.toDateString();
             return date;
+        },
+        goToPlatform(platform: string) {
+            const plat = this.$store.state.platforms.find((p: Platform) => p.name == platform);
+            this.$router.push('/platformdetail/' + plat._id);
         }
     },
     watch: {
