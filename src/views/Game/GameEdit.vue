@@ -84,7 +84,7 @@ export default defineComponent({
             else return false;
         },
         async editGame(formEl: FormInstance | undefined) {
-            if(!utils.validateFields(formEl)) return;
+            if(await utils.validateFields(formEl) == false) return;
 
             const platformIDs = this.$store.getters.filteredPlatformIDs(this.gamePlatforms);
 

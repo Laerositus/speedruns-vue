@@ -68,7 +68,7 @@ export default defineComponent({
     },
     methods: {
         async addPlatform(formEl: FormInstance | undefined) {
-            if(!utils.validateFields(formEl)) return;
+            if(await utils.validateFields(formEl) == false) return;
             
             try{                 
                 let platform = {

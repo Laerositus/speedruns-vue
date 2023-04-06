@@ -1,16 +1,20 @@
+<script lang="ts" setup>
+const ruleFormRef = ref<FormInstance>();
+</script>
+
 <template>
     <div class="entry">
-        <el-form>
-            <el-form-item label="Username" >
-                <el-input v-model="username"/>
+        <el-form ref="ruleFormRef" :model="user" :rules="rules">
+            <el-form-item label="Username" prop="username">
+                <el-input v-model="user.username"/>
             </el-form-item>
-            <el-form-item label="Password" >
-                <el-input v-model="password" type="password" show-password/>
+            <el-form-item label="Password" prop="password">
+                <el-input v-model="user.password" type="password" show-password/>
             </el-form-item>
 
             <div>
-                <el-button @click="register">Register</el-button>
-                <el-button @click="login">Log In</el-button>
+                <el-button @click="register(ruleFormRef)">Register</el-button>
+                <el-button @click="login(ruleFormRef)">Log In</el-button>
             </div>            
         </el-form>
     </div>
@@ -18,8 +22,10 @@
 
 <script lang="ts">
 import type {AxiosInstance} from 'axios'
-import {defineComponent} from 'vue'
-import { Player } from '../models/player'
+import type { FormInstance, FormRules } from 'element-plus';
+import {defineComponent, reactive, ref} from 'vue'
+import { Player } from '@/models/player'
+import utils from '@/utils';
 
 declare module '@vue/runtime-core'{
     interface ComponentCustomProperties {
@@ -31,17 +37,31 @@ export default defineComponent({
     name: 'Entry',
     data() {
         return {
-            username: '',
-            password: ''
+            user: {
+                username: '',
+                password: ''
+            },
+            rules: reactive<FormRules>({
+                username: [
+                    {required: true, message: 'Please enter a username', trigger: 'blur'},
+                    {min: 2, message: 'Password must be at least 2 character', trigger: 'blur'}
+                ],
+                password: [
+                    {required: true, message: 'Please enter a password', trigger: 'blur'},
+                    {min: 4, message: 'Password must be at least 4 characters', trigger: 'blur'}
+                ]
+            })
         }        
     },
     props: ["entryActive"],
     methods: {
-        async register() {
+        async register(formEl: FormInstance | undefined) {
+            if(await utils.validateFields(formEl) == false) return;
+
             //TODO Show error message when register fails
             let userinfo = {
-                "username": this.username,
-                "password": this.password
+                "username": this.user.username,
+                "password": this.user.password
             }
             let res;
 
@@ -59,11 +79,12 @@ export default defineComponent({
                 console.log(res);
             }            
         },
-        async login() {
-            //TODO Show Error message if login failed
+        async login(formEl: FormInstance | undefined) {
+            if(await utils.validateFields(formEl) == false) return;
+
             let userinfo = {
-                "username": this.username,
-                "password": this.password
+                "username": this.user.username,
+                "password": this.user.password
             }
 
             let res;

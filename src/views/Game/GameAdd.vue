@@ -86,7 +86,7 @@ export default defineComponent({
     },
     methods: {
         async addGame(formEl: FormInstance | undefined) {
-            if(!utils.validateFields(formEl)) return;
+            if(await utils.validateFields(formEl) == false) return;
             try {
                 const platformIDs = this.$store.getters.filteredPlatformIDs(this.game.platforms);
 

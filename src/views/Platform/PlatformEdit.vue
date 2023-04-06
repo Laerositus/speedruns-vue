@@ -63,7 +63,7 @@ export default defineComponent({
     },
     methods: {
         async editplatform(formEl: FormInstance | undefined) {
-            if(!utils.validateFields(formEl)) return;
+            if(await utils.validateFields(formEl) == false) return;
 
             const res = await this.$axios.put('/platform/'+ this.id, this.platform)
             console.log("Move to platformDetail view");

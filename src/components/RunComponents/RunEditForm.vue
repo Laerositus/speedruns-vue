@@ -99,7 +99,7 @@ export default defineComponent({
             return this.game.platforms.find((platform: {_id: string}) =>platform._id == id);
         },
         async submitRun(formEl: FormInstance | undefined) {
-            if(!utils.validateFields(formEl)) return;
+            if(await utils.validateFields(formEl) == false) return;
             let player = this.$store.state.loggedInPlayer.playername;
 
             let res;
