@@ -1,12 +1,8 @@
 <template>
   <header>   
-
     <el-affix class="header-item">
       <RouterLink to="/">Home</RouterLink>
     </el-affix>
-    <!-- <el-affix class="header-item">
-      <RouterLink to="/games">Games</RouterLink>
-    </el-affix> -->
     <el-affix class="header-item">
       <RouterLink to="/platforms">Platforms</RouterLink>
     </el-affix>
@@ -30,8 +26,10 @@
       <Entry @dismissEntryDialog="dismissEntryDialog"/>
     </el-dialog>
   </div>
+  <div class="content">
+    <RouterView class="routerview"/>
+  </div>
   
-  <RouterView />
 </template>
 
 <script lang="ts">
@@ -96,16 +94,22 @@ export default {
 <style>
 
 header {
+  position: fixed;
+  z-index: 999;
   display: flex;
   margin: 0;
   padding: 0.5rem;
-  width: inherit;
-  background-color: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .header-item {
   margin-left: 0.1rem;
   margin-right: 0.1rem;
+}
+
+.content {
+  margin-top: 50px;
 }
 
 </style>
