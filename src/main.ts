@@ -18,7 +18,7 @@ const app = createApp(App)
 
 app.use(router)
 app.use(ElementPlus, { size: 'small', zIndex: 3000 })
-axios.defaults.baseURL = localUrl + apiPath;
+axios.defaults.baseURL = remoteUrl + apiPath;
 
 app.use(store)
 app.mount('#app')
