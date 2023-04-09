@@ -27,6 +27,7 @@
 <script lang="ts">
 import { defineComponent, defineProps } from 'vue'
 import { Game } from '@/models/game'
+import type { Platform } from '@/models/platform';
 
 export default defineComponent({
     name: 'GameInfoBar',

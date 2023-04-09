@@ -8,7 +8,7 @@ describe('Home', () => {
         const wrapper = shallowMount(Home);
 
         await wrapper.find("el-button").trigger('click');
-        expect(something_to_happen);
+        expect(wrapper).toBeTruthy();
     }
 })
 

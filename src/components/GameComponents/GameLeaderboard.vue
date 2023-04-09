@@ -65,7 +65,10 @@ export default defineComponent({
             this.$router.push('/runedit/' + id);
         },
         openVideoLink(url: string) {
-            window?.open(url, '_blank').focus();
+            const res = window.open(url, '_blank');
+            if(res != null){
+                res.focus();
+            };
         },
     }
 })
