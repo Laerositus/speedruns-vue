@@ -1,28 +1,29 @@
 <template>
-    <div class="body">
-        <h1> GameDetail page</h1>
-        <!-- {{game.name}} -->
+    <div class="detail-body">
+        <div class="left-side">
+            <GameInfoBar :game="game"/>
+            <GameLeaderboard :game="game" :runs="runs"/>
+        </div>
+        <div>
+            <div class="detail-buttons">
+                <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button>
+                <el-button @click="goToSubmitRunPage"> Submit Run </el-button>
+            </div>
+            <GameStats :game="game" />
+        </div>
     </div>
 
-    <GameInfoBar :game="game" /> 
-    <GameLeaderboard :game="game" />
-    <GameStats :game="game" />
-    <el-button v-if="!editMode" @click="goToEditPage"> Edit game </el-button>
 </template>
 
 <script setup lang="ts">
 import { ElButton } from 'element-plus'
-
 </script>
 
 
 <script lang="ts">
-import type { Game } from '../../models/game'
-import { GAMES } from '../../mock-data'
+import { ElMessage } from 'element-plus'
 import { defineComponent } from 'vue'
-import GameInfoBar from '../../components/GameInfoBar.vue'
-import GameLeaderboard from '../../components/GameLeaderboard.vue'
-import GameStats from '@/components/GameStats.vue'
+import type { Run } from '@/models/run'
 
 import type {AxiosInstance} from 'axios'
 
@@ -37,38 +38,51 @@ export default defineComponent({
     data() {
         return {
             id: '',
-            game: GAMES[0],
             editMode: false,
+            runs: new Array<Run>(),
         }
     },
+    computed: {
+        game() {
+            let g = this.$store.state.games.find((game: { _id: string } ) => game._id == this.id);
+            this.runs = this.$store.getters.runListByGame(g);
+            g.totalRuns = this.runs.length;
+            g.playerCount = 0;
+            var playersInRuns = new Array<string>();
+            this.runs.forEach(run => {
+                if(!playersInRuns.includes(run.player)) {
+                    g.playerCount ++;
+                }
+            })
+            return g;
+        },
+    },
     methods: {
-        async fetchGame(id: any){
-            const res = await this.$axios.get('/game/'+id)
-            // console.log(res.data.data)
-            this.game = res.data.data
-        },
-        async deleteGame() {
-            console.log("Delete game called");
-            // this.toggleEdit();
-            const res = await this.$axios.delete('/game/'+1)
-            console.log(res);
-
-            // this.$router.push('/');
-        },
         toggleEdit() {
             this.editMode = !this.editMode;
             console.log("EditMode set to: "+this.editMode);
         },
         goToEditPage() {
-            console.log("Moving to edit view");
-            this.$router.push('/editGame/'+this.id);
-        }
+            // console.log("Moving to edit view");
+            this.$router.push('/editgame/'+this.id);
+        },
+        goToSubmitRunPage() {
+            // console.log("Moving to submit run view");
+            if(this.$store.state.loggedIn) {
+                this.$router.push('/submit/'+this.id);
+            } else {
+                ElMessage({
+                    showClose: true,
+                    duration: 1500,
+                    message: "You need to be logged in to submit a run.",
+                    type: "warning",
+                });
+            };
+        },
     },
-    async mounted() {
+    created() {
         if( this.$route.params.id){
             this.id = String(this.$route.params.id);
-            // console.log(this.game)
-            await this.fetchGame(this.id);
         }
     }
 })
@@ -77,5 +91,10 @@ export default defineComponent({
 
 
 <style>
+
+.detail-body {
+    margin-top: 10px;
+    display: flex;
+}
 
 </style>

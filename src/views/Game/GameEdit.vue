@@ -1,139 +1,126 @@
 <template>
     <div class="body">
-        <h1> Edit Game page</h1>
-        <!-- {{game.name}} -->
+        <h1> Edit {{ game.name }}</h1>
     </div>
-
-    <!-- <GameInfoBar :game="game" />  -->
     
-    <el-form >
-        <el-form-item label="Game Name" >
-            <el-input v-model="gameName"/>
+    <el-form 
+        ref="ruleFormRef"
+        :model="game"
+        :rules="rules"
+    >
+        <el-form-item label="Game Name" prop="name">
+            <el-input v-model="game.name"/>
         </el-form-item>
 
-        <el-form-item label="Platforms">
-            <el-checkbox-group v-for="platform in PLATFORMS" :key="platform" v-model="gamePlatforms">
-                <el-checkbox :label="platform.name" />
-            </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="gameReleaseDate" :placeholder="gameReleaseDate"/>                
-        </el-form-item>
-        <el-form-item label="TotalRuns">
-            <el-input-number v-model="gameTotalRuns" disabled="true" style="{background-color: white;}"/>
-        </el-form-item>
-        <el-form-item label="Categories">
-            <el-checkbox-group v-for="category in gameCategories" :key="category" v-model="gamePlatforms">
-                <el-checkbox :label="category.name"/>
-            </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="Image URL:">
-            <el-input v-model="gameImage" />
+        <el-form-item label="Platforms" prop="platforms">
+            <div class="form-platforms">
+                <el-checkbox-group v-for="platform in $store.state.platforms" :key="platform._id" v-model="gamePlatforms" class="platforms-group">
+                    <el-checkbox :label="platform.name" :checked="gameContainsPlatform(platform)" class="platforms-item"/>
+                </el-checkbox-group>
+            </div>
         </el-form-item>
 
+        <el-form-item label="Image URL:" prop="image">
+            <el-input v-model="game.image" />
+        </el-form-item>
+        
+        <el-form-item label="ReleaseDate" prop="releaseDate">
+            <el-date-picker v-model="game.releaseDate"/>
+        </el-form-item>
     </el-form>
 
-
     <!-- <el-button v-if="editMode" v-on:click="editGame">Save changes</el-button> -->
-    <el-button type="danger" @click="editGame">Save game</el-button>
+    <el-button type="danger" @click="editGame(ruleFormRef)">Save game</el-button>
     <el-button type="danger" @click="deleteGame">Delete game</el-button>
 </template>
 
-<script setup lang="ts">
-import { 
-    ElButton, 
-    ElForm, 
-    ElInput, 
-    ElFormItem, 
-    ElCheckboxGroup, 
-    ElCheckbox, 
-    ElDatePicker, 
-    ElInputNumber 
-} from 'element-plus'
+<script lang="ts" setup >
+import { ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
 
-import { PLATFORMS } from '../../mock-data'
-
+const ruleFormRef = ref<FormInstance>();
 </script>
 
 <script lang="ts">
-import type { Game } from '../../models/game'
-import { GAMES, CATEGORIES } from '../../mock-data'
-import { defineComponent } from 'vue'
-import GameInfoBar from '../../components/GameInfoBar.vue'
-import GameLeaderboard from '../../components/GameLeaderboard.vue'
-import GameStats from '@/components/GameStats.vue'
-
-import type {AxiosInstance} from 'axios'
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
+import { defineComponent, reactive } from 'vue'
+import { Game } from '@/models/game'
+import type { Platform } from '@/models/platform';
+import utils from '@/utils';
+import axios from 'axios';
 
 export default defineComponent({
     name: 'GameDetail',
     data() {
         return {
             id: '',
-            game: GAMES[0],
-            // editedData: this.game,
-            gameName: '',
-            gamePlatforms: PLATFORMS,
-            gameReleaseDate: new Date(),
-            gameTotalRuns: 0,
-            gameCategories: CATEGORIES,
-            gameRule: '',
-            gameImage: '',
+            gamePlatforms: [],
+            rules: reactive<FormRules>({
+                name: [
+                    { required: true, message: 'Please enter a game name', trigger: 'blur'},
+                    { min: 1, message: 'Length should be at least 1', trigger: 'blur'},
+                ],
+                platforms: [
+                    { 
+                        type: 'array',
+                        required: true,
+                        message: 'Please check at least one game platform',
+                        trigger: 'change'
+                    }
+                ],
+                releaseDate: [
+                    { type: 'date', required: true, message: 'Please enter a game release date', trigger: 'blur'}
+                ]
+            })
         }
     },
+    computed: {
+        game(): Game {
+            const game = this.$store.state.games.find((game: { _id: string }) => game._id == this.id);
+            return game;
+        },
+    },
     methods: {
-        async fetchGame(id: any){
-            const res = await this.$axios.get('/game/'+id)
-            // console.log(res.data.data)
-            this.game = res.data.data;
-            this.fillDetails();
+        gameContainsPlatform(platform: Platform): boolean {
+            if (this.game.platforms.includes(platform._id)) return true;
+            else return false;
         },
-        fillDetails() {
-            this.gameName = this.game.name;
-            this.gamePlatforms = this.game.platforms;
-            this.gameReleaseDate = this.game.releaseDate;     
-            this.gameTotalRuns = this.game.totalRuns;
-            this.gameCategories = this.game.categories;
-            this.gameRule = this.game.gameRule;
-            this.gameImage = this.game.image;
-        },
-        async editGame() {
-            console.log("Save Changes called");
-            let game = {
-                "id": this.id,
-                "name": this.gameName,
-                "platforms": this.gamePlatforms,
-                "releaseDate": this.gameReleaseDate,
-                "totalRuns": this.gameTotalRuns,
-                "playerCount": this.game.playerCount,
-                "categories": this.gameCategories,
-                "gameRule": this.gameRule,
-                "image": this.gameImage
-            }
-            console.log(game);
+        async editGame(formEl: FormInstance | undefined) {
+            if(await utils.validateFields(formEl) == false) return;
 
-            const res = await this.$axios.put('/game/'+ this.id, game)
-            console.log("Move to gameDetail view");
-            this.$router.push('/gamedetail/'+this.id);
+            const platformIDs = this.$store.getters.filteredPlatformIDs(this.gamePlatforms);
+
+            let game = {
+                "_id": this.game._id,
+                "name": this.game.name,
+                "platforms": platformIDs,
+                "releaseDate": this.game.releaseDate,
+                "categories": this.game.categories,
+                "gameRule": this.game.gameRule,
+                "image": this.game.image
+            }
+
+            const res = await axios.put('/game/'+ this.id, game)
+            // console.log(res.data);
+
+            const updatedGame = new Game(game._id, game.name, game.platforms, game.releaseDate, this.game.totalRuns,  this.game.playerCount, this.game.categories, game.gameRule, game.image);
+            this.$store.commit('updateGame', updatedGame);
+
+            this.$router.back();
         },
         async deleteGame() {
             console.log("Delete game called");
-            const res = await this.$axios.delete('/game/'+this.id)
+            const res = await axios.delete('/game/'+this.id)
             console.log(res);
+            this.$store.commit('removeGame', this.id);
 
             this.$router.push('/');
         },
+        log(item: any) {
+            console.log(item);
+        }
     },
-    async mounted() {
-        // console.log(this.game)
+    created() {
         this.id = String(this.$route.params.id);
-        await this.fetchGame(this.id);
     }
 })
 
@@ -141,5 +128,16 @@ export default defineComponent({
 
 
 <style>
+
+.form-platforms {
+    display: grid;
+    grid-template-rows: repeat(5, auto);
+    grid-auto-flow: column;
+    gap: 0.5em;
+}
+
+.platforms-item {
+    margin-left: 10px;
+}
 
 </style>

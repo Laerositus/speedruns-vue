@@ -1,81 +1,110 @@
 <template>
-    <el-button @click="addGame">Add Game</el-button>
-    <div class="game-list">
-
+    <div class="game-list">        
+        <el-button @click="addGame" id="add-game">Add Game</el-button>
         <el-scrollbar max-height="100%">
-
-            <div v-for="game in games" :key="game._id" class="game-item">
-                <RouterLink :to="{name: 'gamedetail', params: {id: game._id}}">
-                    <el-card>
-                        <el-image :src=game.image class="game-cover"/>
-
-                        <div>
-                            <span>{{game.name}}</span>
-                            <div v-for="platform in game.platforms" :key="platform._id">                                
-                                <p>{{platform.name}}</p>
+            <div class="game-grid">            
+                <div v-for="game in games" :key="game._id" class="game-item">
+                    <RouterLink :to="{ name: 'gamedetail', params: { id: game._id } }">
+                        <el-card class="game-card">
+                            <div class="game-image">
+                                <el-image :src=game.image class="game-cover" />
                             </div>
-                        </div>
-                    </el-card>
-                </RouterLink>
+                            
+                            <div>
+                                <span class="game-name">{{ game.name }}</span>
+                                <div class="game-platforms">
+                                    <div v-for="platform in $store.getters.filteredPlatformNames(game.platforms)" :key="platform">
+                                        <div v-if="platform" > {{ platform }}  </div>
+                                        
+                                    </div>
+                                </div>
+
+                            </div>
+                        </el-card>
+                    </RouterLink>
+                </div>            
             </div>
-            
         </el-scrollbar>
     </div>
-    
 </template>
   
 <script lang="ts">
-import { GAMES, PLATFORMS } from '../mock-data'
-
 import { defineComponent } from 'vue'
-import type {AxiosInstance} from 'axios'
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
+import axios from 'axios'
 
 export default defineComponent({
     name: 'Home',
     data() {
         return {
-            games: GAMES,
-            platforms: PLATFORMS
+            random: 0,
         }
+    },
+    computed: {
+        games: {
+            get(): any {
+                return this.$store.state.games;
+            },
+            set() {
+                console.log("Games has changed");
+            }
+        },
     },
     methods: {
-        async fetchData(){
-            console.log(this.games)
-            var res = await this.$axios.get('/game')
-            this.games = res.data.data
-            // this.$store.commit("setGames", this.games)
-            var res2 = await this.$axios.get('/platform')
-            this.platforms = res2.data.data
-            // this.$store.commit("setPlatforms", this.platforms)
-        },
         addGame() {
             this.$router.push('/addgame');
-        }
+        },
     },
-    async mounted() {
-        // console.log(this.games)
-        await this.fetchData()
-
-    }
 })
 </script>
 
 <style>
-  .game-list {
-    
-    display: grid;
-    grid-template-columns: 250px;
-    grid-template-rows: auto;
-    grid-auto-flow: dense;
-  }
 
-  .game-cover {
-    height: 150px;
-  }
+.game-list {
+    margin: 1%
+}
+
+.game-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 160px);
+    grid-row-gap: 5px;
+}
+
+.game-item {
+    width: 150px;
+}
+
+.game-card {
+    height: 300px;
+}
+
+.game-image {
+    width: 98%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.game-cover {
+    height:130px;
+    position: relative;
+    left: 100%;
+    margin-left: -200%;
+}
+
+.game-name {
+    font-size: medium;
+    
+}
+
+.game-platforms {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game-platforms > * {    
+    font-size: 12px;
+    font-weight: 100;
+    margin-right: 3px;
+}
+
 </style>

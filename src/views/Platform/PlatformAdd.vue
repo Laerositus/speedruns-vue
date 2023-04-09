@@ -3,12 +3,16 @@
         <h1> Add new platform</h1>
     </div>
     
-    <el-form >
-        <el-form-item label="Platform Name" >
-            <el-input v-model="platformName"/>
+    <el-form 
+        ref="ruleFormRef"
+        :rules="rules"
+        :model="platform"
+    >
+        <el-form-item label="Platform Name" prop="name">
+            <el-input v-model="platform.name"/>
         </el-form-item>
-        <el-form-item label="ReleaseDate">
-            <el-date-picker v-model="platformReleaseDate" :placeholder="platformReleaseDate"/>                
+        <el-form-item label="ReleaseDate" prop="releaseDate">
+            <el-date-picker v-model="platform.releaseDate" type="date"/>                
         </el-form-item>
         <!-- <el-form-item label="Image URL:">
             <el-input v-model="platformImage" />
@@ -18,70 +22,69 @@
 
 
     <!-- <el-button v-if="editMode" v-on:click="editplatform">Save changes</el-button> -->
-    <el-button type="primary" @click="addplatform">Save platform</el-button>
-    <el-button type="danger" @click="cancel">Cancel</el-button>
+    <el-button type="primary" @click="addPlatform(ruleFormRef)">Save platform</el-button>
+    <el-button type="danger" @click="$router.back()">Cancel</el-button>
 </template>
 
 <script setup lang="ts">
-import { 
-    ElButton, 
-    ElForm, 
-    ElInput, 
-    ElFormItem, 
-    ElCheckboxGroup, 
-    ElCheckbox, 
-    ElDatePicker, 
-    ElInputNumber 
-} from 'element-plus'
+import { reactive, ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
 
+const ruleFormRef = ref<FormInstance>()    
 </script>
 
 <script lang="ts">
-import type { Platform } from '../../models/platform'
-import { GAMES,PLATFORMS } from '../../mock-data'
-import { defineComponent } from 'vue'
-
-import type {AxiosInstance} from 'axios'
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
+import { Platform } from '../../models/platform'
+import { defineComponent} from 'vue'
+import utils from '@/utils'
+import axios from 'axios';
 
 export default defineComponent({
     name: 'platformDetail',
     data() {
         return {
             id: -1,
-            platform: null,
-            platformName: '',
-            platformReleaseDate: '',
+            platform: {
+                name: '',
+                releaseDate: '',
+            },
+            rules: reactive<FormRules>({
+                name: [
+                    { required: true, message: 'Please enter a platform name', trigger: 'blur'},
+                    { min: 1, message: 'Length should be at least 1', trigger: 'blur'},
+                ],
+                releaseDate: [
+                    { type: 'date', required: true, message: 'Please enter a game release date', trigger: 'blur'}
+                ]
+            })
         }
     },
     methods: {
-        async addplatform() {
-            console.log("Save Changes called");
-            let platform = {
-                "name": this.platformName,
-                "releaseDate": this.platformReleaseDate,
-            }
-            console.log(platform);
+        async addPlatform(formEl: FormInstance | undefined) {
+            if(await utils.validateFields(formEl) == false) return;
+            
+            try{                 
+                let platform = {
+                    "name": this.platform.name,
+                    "releaseDate": this.platform.releaseDate,
+                }
+                const res = await axios.post('/platform', platform);
+            
+                let relDate = new Date();
+                relDate.setTime(Date.parse(this.platform.releaseDate));
+                let resP = res.data.data;
+                
+                let p = new Platform( 
+                    resP._id, 
+                    this.platform.name, 
+                    relDate
+                );
+                this.$store.commit('addPlatform', p);
 
-            const res = await this.$axios.post('/platform', platform)
-            console.log("Move to platform view");
-            this.$router.push('/platforms');
-        },
-        cancel() {
-            this.$router.push('/');
+            } catch(e) { console.log(e) }
+            this.$router.back();
         }
     },
-    async mounted() {
-        // console.log(this.platform)
-        // this.id = this.$route.params.id;
-        // await this.fetchplatform(this.id);
-
-    }
 })
 
 </script>

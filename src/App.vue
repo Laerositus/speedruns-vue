@@ -1,63 +1,117 @@
-<script lang="ts" setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { ElAffix } from 'element-plus';
+<template>
+  <header>   
+    <el-affix class="header-item">
+      <RouterLink to="/">Home</RouterLink>
+    </el-affix>
+    <el-affix class="header-item">
+      <RouterLink to="/platforms">Platforms</RouterLink>
+    </el-affix>
+    <el-affix class="header-item">
+      <RouterLink to="/about">About</RouterLink>
+    </el-affix>
+
+    <el-affix>
+      <el-button class="header-item" v-if="!loggedIn" type="primary" @click="showEntry = true" plain>
+        Log In
+      </el-button>
+    </el-affix>
+    <el-affix class="header-item" v-if="loggedIn">
+      <RouterLink :to="{ name: 'player', params: { playername: player.playername } }"> {{ player.playername }}</RouterLink>
+    </el-affix>
+    
+  </header>
+  <div class="flex">
+    <el-dialog v-model="showEntry" title="Register or Log In" >
+      <Entry @dismissEntryDialog="dismissEntryDialog"/>
+    </el-dialog>
+  </div>
+  <div class="content">
+    <RouterView class="routerview"/>
+  </div>
+  
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import axios from 'axios'
+import Entry from './components/Entry.vue'
+
+export default defineComponent({
+  name: 'App',
+  data() {
+    return {
+      showEntry: false
+    }
+  },
+  computed: {
+    player: {
+      get() { 
+        return this.$store.state.loggedInPlayer;
+      },
+      set() { console.log("Logged in Player is updated") }
+    },
+    loggedIn: {
+      get() { return this.$store.state.loggedIn },
+      set() {},
+    }
+  },
+  components: {
+    Entry
+  },
+  methods: {
+    dismissEntryDialog(){
+      this.showEntry = false;
+    },
+
+    async fetchGames(){
+      let res = await axios.get('/game');
+      let games = res.data.data;
+      this.$store.commit("setGames", games);
+    },
+
+    async fetchPlatforms(){
+      let res = await axios.get('/platform');
+      let platforms = res.data.data;
+
+      this.$store.commit("setPlatforms", platforms);
+    },
+
+    async fetchRuns() {
+      let res = await axios.get('/run');
+      let runs = res.data.data;
+
+      this.$store.commit("setRuns", runs);
+    }
+
+  },
+  async created() {
+    await this.fetchPlatforms();
+    await this.fetchGames();
+    await this.fetchRuns();
+  }
+})
 
 </script>
 
-<template>
-  <header>   
-
-    <el-affix class="Home">
-      <RouterLink to="/">Home</RouterLink>
-    </el-affix>
-    <el-affix class="Games">
-      <RouterLink to="/games">Games</RouterLink>
-    </el-affix>
-    <el-affix class="Platforms">
-      <RouterLink to="/platforms">Platforms</RouterLink>
-    </el-affix>
-    <el-affix class="About">
-      <RouterLink to="/about">About</RouterLink>
-    </el-affix>
-  </header>
-
-  <RouterView />
-</template>
-
 <style>
-  header {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    grid-auto-rows: minmax(100px, auto);
-  }
 
-  /* .logo {
-    grid-column: 1/3;
-    width: 100px;
-    height: 100px;
-    fit: contain;
-  } */
+header {
+  position: fixed;
+  z-index: 999;
+  display: flex;
+  margin: 0;
+  padding: 0.5rem;
+  width: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+}
 
-  .Home {
-    grid-column: 1;
-    grid-row: 1;
-  }
+.header-item {
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
+}
 
-  .Platforms {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .Games {
-    grid-column: 3;
-    grid-row: 1;
-  }
-
-
-  .About {
-    grid-column: 4;
-    grid-row: 1;
-  }
+.content {
+  margin-top: 50px;
+}
 
 </style>
