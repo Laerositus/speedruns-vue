@@ -21,5 +21,4 @@ app.use(ElementPlus, { size: 'small', zIndex: 3000 })
 axios.defaults.baseURL = localUrl + apiPath;
 
 app.use(store)
-
 app.mount('#app')
