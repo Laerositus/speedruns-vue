@@ -45,6 +45,7 @@ import { reactive} from 'vue'
 import { Game } from '../../models/game'
 import { defineComponent, } from 'vue'
 import utils from '@/utils'
+import axios from 'axios';
 
 import type {AxiosInstance} from 'axios'
 
@@ -104,7 +105,7 @@ export default defineComponent({
                 ],
             }
             
-            const res = await this.$axios.post('/game', game)
+            const res = await axios.post('/game', game)
             
             let gameData = res.data.data;
 

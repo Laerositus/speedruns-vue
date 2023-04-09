@@ -48,6 +48,7 @@ const ruleFormRef = ref<FormInstance>();
 </script>
 
 <script lang="ts">
+import axios from 'axios';
 import { defineComponent, reactive, ref} from 'vue';
 import type { Category } from '@/models/category';
 import type { Platform } from '@/models/platform';
@@ -122,7 +123,7 @@ export default defineComponent({
 
             let res;
             try {
-                res = await this.$axios.post('/run', newRun);
+                res = await axios.post('/run', newRun);
                 // console.log(res.data);
 
                 let run = new Run(

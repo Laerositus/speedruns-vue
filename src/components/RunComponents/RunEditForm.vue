@@ -50,6 +50,7 @@ const ruleFormRef = ref<FormInstance>();
 
 
 <script lang="ts">
+import axios from 'axios'
 import { defineComponent, reactive, ref} from 'vue';
 import type { Category } from '@/models/category';
 import type { Platform } from '@/models/platform';
@@ -104,7 +105,7 @@ export default defineComponent({
 
             let res;
             try {
-                res = await this.$axios.put('/run/' + this.run._id, this.run);
+                res = await axios.put('/run/' + this.run._id, this.run);
 
                 this.$store.commit('updateRun', this.run);
                 this.$router.back();
@@ -114,7 +115,7 @@ export default defineComponent({
             }
         },
         async deleteRun() {
-            let res = await this.$axios.delete('/run/' + this.run._id);
+            let res = await axios.delete('/run/' + this.run._id);
 
             this.$store.commit('removeRun', this.run._id);
             this.$router.back();

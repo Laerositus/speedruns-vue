@@ -58,11 +58,6 @@ export default defineComponent({
         },
     },
     methods: {
-        async deleteGame() {
-            console.log("Delete game called");
-            const res = await this.$axios.delete('/game/'+1)
-            console.log(res);            
-        },
         toggleEdit() {
             this.editMode = !this.editMode;
             console.log("EditMode set to: "+this.editMode);

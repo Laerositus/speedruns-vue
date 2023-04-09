@@ -16,7 +16,6 @@
       </el-button>
     </el-affix>
     <el-affix class="header-item" v-if="loggedIn">
-      <!-- TODO Fix Routerlink -->
       <RouterLink :to="{ name: 'player', params: { playername: player.playername } }"> {{ player.playername }}</RouterLink>
     </el-affix>
     
@@ -33,9 +32,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
+import axios from 'axios'
 import Entry from './components/Entry.vue'
 
-export default {
+export default defineComponent({
+  name: 'App',
   data() {
     return {
       showEntry: false
@@ -62,20 +64,20 @@ export default {
     },
 
     async fetchGames(){
-      let res = await this.$axios.get('/game');
+      let res = await axios.get('/game');
       let games = res.data.data;
       this.$store.commit("setGames", games);
     },
 
     async fetchPlatforms(){
-      let res = await this.$axios.get('/platform');
+      let res = await axios.get('/platform');
       let platforms = res.data.data;
 
       this.$store.commit("setPlatforms", platforms);
     },
 
     async fetchRuns() {
-      let res = await this.$axios.get('/run');
+      let res = await axios.get('/run');
       let runs = res.data.data;
 
       this.$store.commit("setRuns", runs);
@@ -87,7 +89,7 @@ export default {
     await this.fetchGames();
     await this.fetchRuns();
   }
-}
+})
 
 </script>
 
@@ -99,7 +101,7 @@ header {
   display: flex;
   margin: 0;
   padding: 0.5rem;
-  width: 100%;
+  width: auto;
   background-color: rgba(0, 0, 0, 0.8);
 }
 

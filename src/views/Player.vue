@@ -17,6 +17,7 @@ import { defineComponent } from 'vue';
 
 
 <script lang="ts">
+import axios from 'axios';
 import { PLAYERS } from '../mock-data'
 
 export default defineComponent({
@@ -43,10 +44,10 @@ export default defineComponent({
                     password: this.password
                 }
 
-                res = await this.$axios.delete('/user');
+                res = await axios.delete('/user');
 
                 // Delete from mongo
-                res = await this.$axios.delete('/player/' + this.user.playername);
+                res = await axios.delete('/player/' + this.user.playername);
 
 
             } catch (err) {
@@ -59,7 +60,7 @@ export default defineComponent({
             
         },
         async fetchPlayer(playername: any){
-            const res = await this.$axios.get('/player/' + playername);
+            const res = await axios.get('/player/' + playername);
             this.user = res.data.data;
         }
     },

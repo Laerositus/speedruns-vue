@@ -37,14 +37,7 @@ const ruleFormRef = ref<FormInstance>()
 import { Platform } from '../../models/platform'
 import { defineComponent} from 'vue'
 import utils from '@/utils'
-
-import type {AxiosInstance} from 'axios'
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
+import axios from 'axios';
 
 export default defineComponent({
     name: 'platformDetail',
@@ -75,7 +68,7 @@ export default defineComponent({
                     "name": this.platform.name,
                     "releaseDate": this.platform.releaseDate,
                 }
-                const res = await this.$axios.post('/platform', platform);
+                const res = await axios.post('/platform', platform);
             
                 let relDate = new Date();
                 relDate.setTime(Date.parse(this.platform.releaseDate));

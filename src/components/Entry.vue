@@ -4,34 +4,31 @@ const ruleFormRef = ref<FormInstance>();
 
 <template>
     <div class="entry">
-        <el-form ref="ruleFormRef" :model="user" :rules="rules">
-            <el-form-item label="Username" prop="username">
-                <el-input v-model="user.username"/>
-            </el-form-item>
-            <el-form-item label="Password" prop="password">
-                <el-input v-model="user.password" type="password" show-password/>
-            </el-form-item>
+        <div class="content">
+            <el-form ref="ruleFormRef" :model="user" :rules="rules">
+                <el-form-item label="Username" prop="username">
+                    <el-input v-model="user.username" data-test="username"/>
+                </el-form-item>
+                <el-form-item label="Password" prop="password">
+                    <el-input v-model="user.password" type="password" data-test="password" show-password/>
+                </el-form-item>
+    
+                <div>
+                    <el-button @click="register(ruleFormRef)" data-test="register">Register</el-button>
+                    <el-button @click="login(ruleFormRef)" data-test="login">Log In</el-button>
+                </div>            
+            </el-form>
 
-            <div>
-                <el-button @click="register(ruleFormRef)">Register</el-button>
-                <el-button @click="login(ruleFormRef)">Log In</el-button>
-            </div>            
-        </el-form>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import type {AxiosInstance} from 'axios'
+import axios from 'axios'
 import type { FormInstance, FormRules } from 'element-plus';
 import {defineComponent, reactive, ref} from 'vue'
 import { Player } from '@/models/player'
 import utils from '@/utils';
-
-declare module '@vue/runtime-core'{
-    interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
 
 export default defineComponent({
     name: 'Entry',
@@ -55,29 +52,28 @@ export default defineComponent({
     },
     props: ["entryActive"],
     methods: {
-        async register(formEl: FormInstance | undefined) {
+        async register(formEl: FormInstance | undefined) {            
             if(await utils.validateFields(formEl) == false) return;
-
             //TODO Show error message when register fails
             let userinfo = {
                 "username": this.user.username,
                 "password": this.user.password
             }
+
             let res;
 
             try {
-                res = await this.$axios.post('/auth/register', userinfo); 
-                //console.log(res);     // res.data.data = playername + password
+                res = await axios.post('/auth/register', userinfo); 
                 let resData = res.data.data;
 
                 const newPlayer = new Player(userinfo.username);
-                res = await this.$axios.post('/player', newPlayer);
+                res = await axios.post('/player', newPlayer);
 
                 this.$store.commit('logIn', newPlayer);
                 this.$emit('dismissEntryDialog');
             } catch (err) {
                 console.log(res);
-            }            
+            }
         },
         async login(formEl: FormInstance | undefined) {
             if(await utils.validateFields(formEl) == false) return;
@@ -89,13 +85,14 @@ export default defineComponent({
 
             let res;
             try {
-                res = await this.$axios.post('/auth/login', userinfo);
+                res = await axios.post('/auth/login', userinfo);
                 if(res.status !== 200) {
                     console.log("Login failed: " + res.data.message);
                     return;
                 }
+                console.log(res);
 
-                res = await this.$axios.get('/player/'+userinfo.username);
+                res = await axios.get('/player/'+userinfo.username);
 
                 if(res.status !== 200){
                     // No player found'

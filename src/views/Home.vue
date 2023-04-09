@@ -29,8 +29,10 @@
 </template>
   
 <script lang="ts">
+import { defineComponent } from 'vue'
+import axios from 'axios'
 
-export default ({
+export default defineComponent({
     name: 'Home',
     data() {
         return {
@@ -48,18 +50,10 @@ export default ({
         },
     },
     methods: {
-        async fetchGames(){
-            let res = await this.$axios.get('/game');
-            let games = res.data.data;
-            this.$store.commit("setGames", games);
-        },
         addGame() {
             this.$router.push('/addgame');
         },
     },
-    async mounted() {
-        await this.fetchGames();
-    }
 })
 </script>
 

@@ -46,6 +46,7 @@ import { defineComponent, reactive } from 'vue'
 import { Game } from '@/models/game'
 import type { Platform } from '@/models/platform';
 import utils from '@/utils';
+import axios from 'axios';
 
 export default defineComponent({
     name: 'GameDetail',
@@ -98,7 +99,7 @@ export default defineComponent({
                 "image": this.game.image
             }
 
-            const res = await this.$axios.put('/game/'+ this.id, game)
+            const res = await axios.put('/game/'+ this.id, game)
             // console.log(res.data);
 
             const updatedGame = new Game(game._id, game.name, game.platforms, game.releaseDate, this.game.totalRuns,  this.game.playerCount, this.game.categories, game.gameRule, game.image);
@@ -108,7 +109,7 @@ export default defineComponent({
         },
         async deleteGame() {
             console.log("Delete game called");
-            const res = await this.$axios.delete('/game/'+this.id)
+            const res = await axios.delete('/game/'+this.id)
             console.log(res);
             this.$store.commit('removeGame', this.id);
 

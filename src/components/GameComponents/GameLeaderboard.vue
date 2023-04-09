@@ -10,7 +10,7 @@ import { Film } from '@element-plus/icons-vue'
     stripe 
     :data="runs"
     :default-sort="{ prop: 'placement', order: 'ascending' }">
-            <el-table-column prop="placement" label="Placement"/>
+            <el-table-column prop="placement" label="Placement" data-test="placement"/>
             <el-table-column prop="player" label="Player"/>
             <el-table-column label="Platform">
                 <template #default="scope">
@@ -50,11 +50,7 @@ import type { Run } from '@/models/run'
 
 export default defineComponent({
     name: 'GameLeaderboard',
-    props: [ 'runs', 'game'],
-    data() {
-        return {
-        }
-    },
+    props: [ 'runs','game'],
     methods: {
         getCategory(catID: string): string {
             const cat = this.game.categories.find((el: { _id: string; }) => el._id == catID);

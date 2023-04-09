@@ -32,12 +32,7 @@ import { defineComponent, reactive, ref } from 'vue'
 import type {AxiosInstance} from 'axios'
 import type { FormInstance, FormRules } from 'element-plus'
 import utils from '@/utils';
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $axios: AxiosInstance
-  }
-}
+import axios from 'axios';
 
 export default defineComponent({
     name: 'platformDetail',
@@ -65,14 +60,14 @@ export default defineComponent({
         async editplatform(formEl: FormInstance | undefined) {
             if(await utils.validateFields(formEl) == false) return;
 
-            const res = await this.$axios.put('/platform/'+ this.id, this.platform)
+            const res = await axios.put('/platform/'+ this.id, this.platform)
             console.log("Move to platformDetail view");
 
             this.$store.commit('updatePlatform', this.platform);
             this.$router.push('/platformdetail/'+this.id);
         },
         async deleteplatform() {
-            const res = await this.$axios.delete('/platform/'+this.id)
+            const res = await axios.delete('/platform/'+this.id)
             console.log(res);
 
             this.$store.commit('removePlatform', this.platform._id);

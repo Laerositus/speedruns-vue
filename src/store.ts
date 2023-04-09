@@ -1,25 +1,27 @@
 import { createStore } from 'vuex'
-import { PLAYERS } from './mock-data'
+import { PLAYERS, GAMES, PLATFORMS, RUNS } from './mock-data'
 import type { Game } from '@/models/game'
 import type { Platform } from '@/models/platform'
 import type { Run } from '@/models/run'
 import { Category } from '@/models/category'
 import utils from '@/utils'
 
-const state = {
-    games: new Array<Game>(),
-    platforms: new Array<Platform>(),
-    runs: new Array<Run>(),
-    loggedIn: true,
-    loggedInPlayer: PLAYERS[0]
+export const state = {
+    games: GAMES,
+    platforms: PLATFORMS,
+    runs: RUNS,
+    loggedIn: false,
+    loggedInPlayer: null,
 }
 
-const mutations = {
+export const mutations = {
     setGames(state: any, games: Game[]) {
         // console.log("Mutation setGames called");
         if(games == undefined) return;
         state.games = games;
         
+        if(state.games !instanceof Array) return;
+        console.log(state.games);
         state.games.forEach((game: { totalRuns: number | undefined; playerCount: number | undefined }) => {
             if(game.totalRuns == undefined) { game.totalRuns =  0; }
             if(game.playerCount == undefined) { game.playerCount = 0; }
@@ -70,6 +72,10 @@ const mutations = {
     addPlatform(state: any, platform: Platform) {
         if (state.platforms == undefined) { state.platforms = new Array<Platform>(); }
         state.platforms.push(platform);
+    },
+    updatePlatform(state: any, updatedPlatform: Platform) {
+        const objIndex = state.platforms.findIndex((plat: { _id: string }) => plat._id == updatedPlatform._id);
+        state.platforms[objIndex] = updatedPlatform;
     },
     removePlatform(state: any, removedPlatformId: any){
         state.platforms = state.platforms.filter((platform: any) => platform._id !== removedPlatformId);
@@ -152,9 +158,9 @@ const mutations = {
     }
 }
 
-const actions = { }
+export const actions = { }
 
-const getters = {
+export const getters = {
     runsSorted (state:any, runs: Run[]): Run[] {
         const timeInSeconds = (time : {hours: number, minutes: number, seconds: number}) => time.hours * 60 * 60 + time.minutes * 60 + time.seconds;
         const sortedRuns = runs.sort((a,b) => timeInSeconds(a.time)-timeInSeconds(b.time));
@@ -187,7 +193,7 @@ const getters = {
     },
 }
 
-const modules = {}
+export const modules = {}
 
 export default createStore({
     state,
